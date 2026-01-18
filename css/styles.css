@@ -129,19 +129,17 @@ img {
   height: auto;
 }
 
-/* “Розовые блоки” на макете — картинки, делаем как большие прямоугольники */
+/* Картинки отображаются целиком без обрезки */
 main > figure,
 section figure {
-  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
-/* Если картинка не 16:9 — можно включить object-fit */
 main > figure img,
 section figure img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  display: block;
 }
 
 footer {
