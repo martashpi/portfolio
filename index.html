@@ -2,94 +2,130 @@
 <html lang="ru">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portfolio</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Марта Шпигельман — дизайнер</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body>
-  <header id="top">
-    <nav aria-label="Основная навигация">
-      <a href="#about">Обо мне</a>
-      <a href="#portfolio" aria-current="page">Портфолио</a>
-      <a href="./cv/index.html">Резюме</a>
+<body class="portfolio-page">
+  <header class="site-header">
+    <div class="site-header__identity">
+      <a class="site-name" href="/">Марта Шпигельман</a>
+      <a class="resume-link" href="cv/index.html">Резюме</a>
+    </div>
+    <nav aria-label="Разделы сайта">
+      <a class="is-current" href="/">Дизайн</a>
+      <a href="#art">Арт</a>
     </nav>
   </header>
 
-  <main>
-    <section id="portfolio" aria-labelledby="portfolio-title">
-      <div>
-        <h1 id="portfolio-title">Портфолио</h1>
-
-      </div>
-
-      <article class="project_main_page">
-        <figure>
-          <a href="projects/3-books/index.html">
-            <img src="img/main portfolio/3-BOOKS.png" alt="Вёрстка обложек для издательства" />
-          </a>
-        </figure>
-        <div>
-          <h2><a href="projects/3-books/index.html">Вёрстка обложек<br />для издательства</a></h2>
-          <p>2024—2025</p>
-        </div>
+  <main class="portfolio" id="art">
+    <section class="intro-grid" aria-label="Избранные работы">
+      <article class="project-card">
+        <a class="project-card__title" href="projects/3-books/index.html">
+          <h2>ОБЛОЖКИ КНИГ</h2>
+          <p>Redliber</p>
+        </a>
+        <a class="books-showcase" href="projects/3-books/index.html" aria-label="Открыть проект с обложками книг Redliber">
+          <span class="book-scene"><img src="img/2_ver/Books_list/b_1.png" alt="Книга «Бизнес в диалоге»"></span>
+          <span class="book-scene"><img src="img/2_ver/Books_list/b_2.png" alt="Книга «Шаны Цуркаша»"></span>
+          <span class="book-scene"><img src="img/2_ver/Books_list/b_3.png" alt="Книга с иллюстрацией бабочки"></span>
+        </a>
       </article>
-
-      <article class="project_main_page">
-        <figure>
-          <a href="projects/doors/index.html">
-            <img src="img/main portfolio/Doors.png" alt="Иллюстрации на дверях и ширмах для ресторана" />
-          </a>
-        </figure>
-        <div>
-          <h2><a href="projects/doors/index.html">Иллюстрации на дверях<br />и ширмах для ресторана</a></h2>
-          <p>2025</p>
-        </div>
-      </article>
-
-      <article class="project_main_page">
-        <figure>
-          <a href="projects/masonic/index.html">
-            <img src="img/main portfolio/masonic.png" alt="Иллюстрации для ресторана" />
-          </a>
-        </figure>
-        <div>
-          <h2><a href="projects/masonic/index.html">Иллюстрации для ресторана</a></h2>
-          <p>2024</p>
-        </div>
-      </article>
-
-      <article class="project_main_page">
-        <figure>
-          <a href="projects/moomoo/index.html">
-            <img src="img/main portfolio/moomoo.png" alt="Ребрендинг логотипа для ресторана" />
-          </a>
-        </figure>
-        <div>
-          <h2><a href="projects/moomoo/index.html">Ребрендинг логотипа<br />для ресторана</a></h2>
-          <p>2025</p>
-        </div>
-      </article>
-
-      <article class="project_main_page">
-        <figure>
-          <a href="projects/zavodnoi-apelsin/index.html">
-            <img src="img/main portfolio/zavodnoi-apelsin.png"
-              alt="Иллюстрации и вёрстка для книги Заводной апельсин" />
-          </a>
-        </figure>
-        <div>
-          <h2><a href="projects/zavodnoi-apelsin/index.html">Иллюстрации и вёрстка<br />для книги Заводной апельсин</a>
-          </h2>
-          <p>2023</p>
-        </div>
+      <article class="project-card">
+        <a class="project-card__title" href="projects/moomoo/index.html">
+          <h2>РЕБРЕНДИНГ</h2>
+          <p>Moo Moo</p>
+        </a>
+        <a href="projects/moomoo/index.html"><img src="img/2_ver/moo_moo.png" alt="Ребрендинг Moo Moo"></a>
       </article>
     </section>
 
+    <section class="doors-layout" aria-label="Постеры и интерьерные иллюстрации">
+      <article class="posters-card">
+        <a href="#posters"><h2>365+<br>POSTERS</h2><p>Проект</p><img src="img/2_ver/posters.png" alt="Коллекция постеров"></a>
+      </article>
+      <div class="doors-column">
+        <article class="doors-card">
+          <a class="project-card__title" href="projects/doors/index.html"><h2>ИНТЕРЬЕРНЫЕ ИЛЛЮСТРАЦИИ</h2><p>Tangiers lounge</p></a>
+          <div class="doors-collage">
+            <img src="img/2_ver/5_doors.png" alt="Иллюстрации для Tangiers lounge">
+            <img src="img/2_ver/sign.png" alt="Вывеска Tangiers lounge">
+            <img src="img/2_ver/red_doors.png" alt="Красные иллюстрации для Tangiers lounge">
+          </div>
+        </article>
+        <article class="exhibition-project">
+          <a class="project-card__title" href="#exhibition"><h2>ПЕРСОНАЛЬНАЯ ВЫСТАВКА</h2></a>
+          <img src="img/2_ver/exhib.png" alt="Персональная выставка">
+        </article>
+      </div>
+    </section>
 
+    <section class="wide-project visual-system">
+      <a class="project-card__title" href="#visual-system"><h2>ВИЗУАЛЬНАЯ СИСТЕМА И ПРОМО-МАТЕРИАЛЫ</h2><p>Кирилл Устинов</p></a>
+      <div class="identity-grid">
+        <div class="identity-small-cards">
+          <img src="img/2_ver/K_U.png" alt="Визуальная система Кирилла Устинова">
+          <img src="img/2_ver/K_U_2.png" alt="Промо-материалы Кирилла Устинова">
+        </div>
+        <div class="visual-showcase" aria-label="Промо-материалы Кирилла Устинова">
+          <span class="visual-scene"><img src="img/2_ver/Books_list/K_1.png" alt="Афиша весеннего тура"></span>
+          <span class="visual-scene"><img src="img/2_ver/Books_list/K_2.png" alt="Афиша Кирилла Устинова"></span>
+          <span class="visual-scene"><img src="img/2_ver/Books_list/K_3.png" alt="Афиша концерта в Москве"></span>
+        </div>
+      </div>
+    </section>
 
+    <section class="media-project">
+      <a class="project-card__title" href="#media"><h2>МОУШЕН-ГРАФИКА ДЛЯ ПОДКАСТОВ И МЕДИА</h2></a>
+      <div class="media-grid">
+        <article><h3>SMOOGLE</h3><img src="img/2_ver/smygl.png" alt="Моушен-графика для SMOOGLE"></article>
+        <article><h3>9 ИМЁН</h3><img src="img/2_ver/imena_vid.png" alt="Видео проекта 9 имён"><img src="img/2_ver/imena_graph.png" alt="Графика проекта 9 имён"></article>
+      </div>
+    </section>
+
+    <section class="wide-project orange-project">
+      <a class="project-card__title" href="projects/zavodnoi-apelsin/index.html"><h2>ВЁРСТКА, ИЛЛЮСТРАЦИИ И ПЕЧАТЬ КНИГИ<br>«ЗАВОДНОЙ АПЕЛЬСИН»</h2></a>
+      <img src="img/2_ver/orage.png" alt="Иллюстрации к книге Заводной апельсин">
+    </section>
+
+    <section class="wide-project stickers-project" id="posters">
+      <a class="project-card__title" href="#stickers"><h2>ПРОМО-СТИКЕРЫ</h2></a>
+      <img src="img/2_ver/stickers.png" alt="Промо-стикеры">
+    </section>
   </main>
-</body>
+  <script>
+    document.querySelectorAll('.books-showcase, .visual-showcase').forEach((showcase) => {
+      const sceneSelector = '.book-scene, .visual-scene';
+      const scenes = showcase.querySelectorAll(sceneSelector);
+      let activeScene = null;
+      const reset = () => scenes.forEach((scene) => {
+        scene.style.setProperty('--shift-x', '0px');
+        scene.style.setProperty('--shift-y', '0px');
+      });
 
+      showcase.addEventListener('pointermove', (event) => {
+        const scene = event.target.closest(sceneSelector);
+        if (!scene) return;
+        const bounds = showcase.getBoundingClientRect();
+        const x = (event.clientX - bounds.left) / bounds.width - .5;
+        const y = (event.clientY - bounds.top) / bounds.height - .5;
+        if (activeScene && activeScene !== scene) {
+          activeScene.style.setProperty('--shift-x', '0px');
+          activeScene.style.setProperty('--shift-y', '0px');
+        }
+        activeScene = scene;
+        scene.style.setProperty('--shift-x', `${x * 50.715}px`);
+        scene.style.setProperty('--shift-y', scene.classList.contains('book-scene') ? '0px' : `${y * 50.715}px`);
+      });
+
+      showcase.addEventListener('pointerleave', () => {
+        activeScene = null;
+        reset();
+      });
+      reset();
+    });
+  </script>
+</body>
 </html>
