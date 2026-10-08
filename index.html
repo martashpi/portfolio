@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Марта Шпигельман — дизайнер</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=20261008-4">
 </head>
 
 <body class="portfolio-page">
@@ -44,7 +44,25 @@
 
     <section class="doors-layout" aria-label="Постеры и интерьерные иллюстрации">
       <article class="posters-card">
-        <a href="#posters"><h2>365+<br>POSTERS</h2><p>Проект</p><img src="img/2_ver/posters.png" alt="Коллекция постеров"></a>
+        <a class="posters-card__title" href="#posters"><h2>365+<br>POSTERS</h2><p>Проект</p></a>
+        <div class="posters-scroll-wrap">
+          <div class="posters-scroll" tabindex="0" aria-label="Прокручиваемая коллекция постеров">
+            <img src="img/2_ver/Books_list/365_posters_1.png" alt="Постер из коллекции 365 Posters">
+            <img src="img/2_ver/Books_list/365_posters_2.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_3.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_4.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_5.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_6.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_7.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_8.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_9.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_10.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_11.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_12.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_13.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+            <img src="img/2_ver/Books_list/365_posters_14.png" alt="Постер из коллекции 365 Posters" loading="lazy" decoding="async">
+          </div>
+        </div>
       </article>
       <div class="doors-column">
         <article class="doors-card">
@@ -66,7 +84,7 @@
       <a class="project-card__title" href="#visual-system"><h2>ВИЗУАЛЬНАЯ СИСТЕМА И ПРОМО-МАТЕРИАЛЫ</h2><p>Кирилл Устинов</p></a>
       <div class="identity-grid">
         <div class="identity-small-cards">
-          <img src="img/2_ver/K_U.png" alt="Визуальная система Кирилла Устинова">
+          <video class="identity-video" autoplay muted loop playsinline preload="metadata" poster="img/2_ver/K_U.png" aria-label="Промо-видео Кирилла Устинова" data-video-src="video/kirill_pr.mp4"></video>
           <img src="img/2_ver/K_U_2.png" alt="Промо-материалы Кирилла Устинова">
         </div>
         <div class="visual-showcase" aria-label="Промо-материалы Кирилла Устинова">
@@ -126,6 +144,29 @@
       });
       reset();
     });
+
+    const videoObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(({ isIntersecting, target }) => {
+        if (!isIntersecting) return;
+        target.src = target.dataset.videoSrc;
+        target.play().catch(() => {});
+        observer.unobserve(target);
+      });
+    }, { rootMargin: '240px 0px' });
+
+    document.querySelectorAll('video[data-video-src]').forEach((video) => videoObserver.observe(video));
+
+    const postersCard = document.querySelector('.posters-card');
+    const doorsColumn = document.querySelector('.doors-column');
+    if (postersCard && doorsColumn) {
+      const syncPostersHeight = () => {
+        postersCard.style.setProperty('--posters-height', `${doorsColumn.getBoundingClientRect().height}px`);
+      };
+      new ResizeObserver(syncPostersHeight).observe(doorsColumn);
+      window.addEventListener('load', syncPostersHeight, { once: true });
+      syncPostersHeight();
+    }
+
   </script>
 </body>
 </html>
