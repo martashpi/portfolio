@@ -110,10 +110,10 @@ body:not(.portfolio-page) footer { max-width: 860px; margin: 0 auto; padding-lef
 body:not(.portfolio-page) header { padding-top: 1.25rem; padding-bottom: .625rem; }
 body:not(.portfolio-page) header nav a { display: inline-block; padding: .5rem 0; color: var(--muted); }
 body:not(.portfolio-page) header > div { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: .625rem 0 .5rem; }
-body:not(.portfolio-page) h1 { margin: 0; font-size: clamp(3rem, 10vw, 4rem); font-weight: 400; line-height: 1.05; letter-spacing: -.02em; }
+body:not(.portfolio-page) h1 { margin: 0; font-size: clamp(2rem, 10vw, 4rem); font-weight: 400; line-height: 1; letter-spacing: 0; }
 body:not(.portfolio-page) header > div > p { margin: .4rem 0 0; color: var(--muted); white-space: nowrap; }
 body:not(.portfolio-page) main { padding-top: 1rem; padding-bottom: 2.5rem; }
-body:not(.portfolio-page) main h2 { margin: 2rem 0 .625rem; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1.2; letter-spacing: -.01em; }
+body:not(.portfolio-page) main h2 { margin: clamp(1.5rem, 4vw, 2rem) 0 clamp(.5rem, 1vw, .625rem); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1; letter-spacing: 0; }
 body:not(.portfolio-page) main h3 { font-size: 1rem; }
 body:not(.portfolio-page) main p { margin: 1.25rem 0 0; max-width: 62ch; }
 body:not(.portfolio-page) main figure { margin: 1.375rem 0 0; overflow: hidden; }
@@ -131,4 +131,662 @@ body:not(.portfolio-page) footer { padding-top: .625rem; padding-bottom: 1.875re
   body:not(.portfolio-page) header > div { flex-direction: column; gap: .5rem; }
   #cv-page .cv-grid { grid-template-columns: 1fr; }
   #cv-page .cv-grid > section + section { border-left: 0; border-top: 1px solid transparent; }
+}
+
+/* Проект Moo Moo — новая desktop/mobile-композиция из Figma. */
+body.moomoo-project-page {
+  margin: 0;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  color: #111;
+  background: #fff;
+  font-family: Inter, Arial, sans-serif;
+}
+body.moomoo-project-page::-webkit-scrollbar,
+html:has(body.moomoo-project-page)::-webkit-scrollbar { display: none; }
+html:has(body.moomoo-project-page) { overflow-x: hidden; scrollbar-width: none; }
+body.moomoo-project-page .moomoo-project-canvas {
+  position: relative;
+  width: 1400px;
+  height: 6500px;
+  max-width: none;
+  margin: 0 auto;
+  padding: 0;
+}
+.moomoo-project-back,
+.moomoo-project-year,
+.moomoo-project-copy {
+  position: absolute;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+.moomoo-project-back { top: 75px; left: 115px; color: inherit; }
+.moomoo-project-year { top: 75px; right: 115px; }
+body.moomoo-project-page h1 {
+  position: absolute;
+  top: 175px;
+  left: 115px;
+  width: 802px;
+  margin: 0;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+body.moomoo-project-page .moomoo-project-copy {
+  max-width: none;
+  margin: 0;
+  text-wrap: balance;
+  word-break: break-word;
+}
+.moomoo-project-copy--intro { top: 377px; left: 115px; width: 1069px; transform: translateY(-100%); }
+.moomoo-project-copy--cartoon { top: 1416px; left: 100px; width: 877px; }
+.moomoo-project-copy--mascot { top: 2157px; left: 100px; width: 572px; }
+.moomoo-project-copy--logo { top: 3023px; left: 101px; width: 1116px; }
+.moomoo-project-copy--references { top: 3947px; left: 100px; width: 850px; }
+.moomoo-project-copy--red { top: 4528px; left: 108px; width: 961px; }
+.moomoo-project-copy--final { top: 5356px; left: 135px; width: 1021px; }
+.moomoo-copy-mobile { display: none; }
+body.moomoo-project-page .moomoo-project-piece {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+}
+.moomoo-project-piece .moomoo-project-art { display: block; width: 100%; height: 100%; object-fit: fill; }
+body.moomoo-project-page .moomoo-project-piece--1 { top: 541px; left: 100px; width: 1200px; height: 716px; overflow: visible; }
+.moomoo-project-head { position: absolute; z-index: 2; top: -516px; left: 438px; display: block; width: 822px; height: 703.397px; overflow: hidden; }
+.moomoo-project-head img { display: block; width: 100%; height: auto; }
+.moomoo-project-piece--2 { top: 1522px; left: 171px; width: 1021px; height: 521px; }
+.moomoo-project-piece--3 { top: 2152px; left: 219px; width: 915px; height: 785.586px; }
+.moomoo-project-piece--4 { top: 3175px; left: 88px; width: 1200px; height: 670px; }
+.moomoo-project-piece--5 { top: 4036px; left: 207px; width: 904.877px; height: 373.751px; }
+.moomoo-project-piece--6 { top: 4732px; left: 222px; width: 446px; height: 464px; }
+.moomoo-project-piece--6-2 { top: 4732px; left: 668px; width: 434px; height: 464px; }
+.moomoo-project-piece--7 { top: 5481px; left: 119px; width: 554px; height: 414px; }
+.moomoo-project-piece--9 { top: 5944px; left: 119px; width: 553.975px; height: 414.713px; }
+.moomoo-project-piece--8 { top: 5481px; left: 696px; width: 585.343px; height: 877.904px; }
+
+@media (min-width: 900px) and (max-width: 1399px) {
+  body.moomoo-project-page .moomoo-project-canvas {
+    width: 1400px;
+    height: calc(100vw * 4.642857);
+    margin-right: 0;
+    margin-left: calc((100vw - 1400px) / 2);
+    transform: scale(calc(100vw / 1400px));
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 899px) {
+  body.moomoo-project-page .moomoo-project-canvas { width: min(100%, 390px); height: 3310px; }
+  .moomoo-project-back { top: 44px; left: 27.75px; }
+  .moomoo-project-year { top: 44px; right: 39px; }
+  body.moomoo-project-page h1 { top: 99px; left: 46px; width: 358px; font-size: 32px; }
+  body.moomoo-project-page .moomoo-project-copy { left: 46px; max-width: calc(100vw - 64px); }
+  .moomoo-project-copy--intro { top: 243px; width: 183px; }
+  .moomoo-project-copy--cartoon { top: 490px; width: 291px; }
+  .moomoo-project-copy--mascot { top: 736px; width: 270px; }
+  .moomoo-project-copy--logo { top: 1039px; width: 310.886px; }
+  .moomoo-project-copy--references { top: 1309px; width: 277px; }
+  .moomoo-project-copy--red { top: 1557px; width: 267.707px; }
+  .moomoo-project-copy--final { top: 2255px; width: 284.421px; }
+  .moomoo-copy-desktop { display: none; }
+  .moomoo-copy-mobile { display: inline; }
+  body.moomoo-project-page .moomoo-project-piece--1 { top: 282.21px; left: 50%; width: 289.997px; height: 173.031px; transform: translateX(-50%); }
+  .moomoo-project-head { top: -144.21px; left: 116px; width: 232.351px; height: 198.826px; }
+  .moomoo-project-piece--2 { top: 552px; left: 13.5897%; width: 284.421px; height: 145.136px; }
+  .moomoo-project-piece--3 { top: 793px; left: 15.6421%; width: 254.893px; height: 218.842px; }
+  .moomoo-project-piece--4 { top: 1123.57px; left: 15.5203%; width: 262.262px; height: 146.429px; }
+  .moomoo-project-piece--5 { top: 1381px; left: 16.9231%; width: 252.073px; height: 104.116px; }
+  .moomoo-project-piece--6 { top: 1612px; left: 9.7432%; width: 289.323px; height: 301px; }
+  .moomoo-project-piece--6-2 { top: 1883px; left: 11.2822%; width: 281.539px; height: 301px; }
+  .moomoo-project-piece--7 { top: 2326px; left: 8.5%; width: 303.709px; height: 226.959px; }
+  .moomoo-project-piece--9 { top: 2567px; left: 8.5%; width: 303.695px; height: 227.35px; }
+  .moomoo-project-piece--8 { top: 2808px; left: 8.5%; width: 308.1px; height: 462.092px; }
+}
+
+/* Страница выбора интерьерных проектов */
+body.doors-index-page {
+  margin: 0;
+  color: #111;
+  background: #fff;
+  font-family: Inter, Arial, sans-serif;
+}
+body.doors-index-page .doors-index-header,
+body.doors-index-page .doors-index-projects {
+  width: min(calc(100% - 230px), 1170px);
+  max-width: none;
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+body.doors-index-page .doors-index-header {
+  padding-top: 75px;
+  padding-bottom: 0;
+}
+body.doors-index-page .doors-index-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  color: #111;
+  font-size: 16px;
+  line-height: 1.45;
+  padding: 0;
+}
+.doors-index-meta a { color: inherit; }
+.doors-index-meta span { transform: translateX(15px); }
+body.doors-index-page h1 {
+  width: 1098px;
+  max-width: 100%;
+  margin: 77px 0 0;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+body.doors-index-page .doors-index-projects {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 0;
+  padding-top: 132px;
+  padding-bottom: 76px;
+}
+.doors-index-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  color: #111;
+}
+.doors-index-art {
+  display: flex;
+  height: 414px;
+  align-items: center;
+  justify-content: center;
+}
+.doors-index-art picture { display: contents; }
+.doors-index-art img {
+  --art-x: 0px;
+  --art-y: 0px;
+  width: auto;
+  max-width: none;
+  height: auto;
+  transform: translate(var(--art-x), var(--art-y));
+  transition: transform 240ms ease-out;
+}
+.doors-index-card--doors .doors-index-art img {
+  --art-x: 2.8925px;
+  --art-y: 26.305px;
+  width: min(114%, 437.705px);
+}
+.doors-index-card--sign .doors-index-art img {
+  --art-x: 15.5445px;
+  --art-y: 28.605px;
+  width: min(100%, 384.089px);
+}
+.doors-index-card--screens .doors-index-art img {
+  --art-x: .534px;
+  --art-y: 1.666px;
+  width: min(130%, 496.068px);
+}
+.doors-index-card-title {
+  display: block;
+  margin-top: 105px;
+  text-align: center;
+}
+.doors-index-card-title strong {
+  display: block;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.doors-index-card-title strong {
+  font-size: 48px;
+  line-height: 1;
+}
+.doors-index-card--doors .doors-index-card-title { transform: translateX(17.5px); }
+.doors-index-card--sign .doors-index-card-title { transform: translateX(7px); }
+.doors-index-card--screens .doors-index-card-title { transform: translateX(-1.5px); }
+.doors-index-card:hover .doors-index-card-title strong { text-decoration: underline; text-underline-offset: .12em; }
+
+@media (max-width: 699px) {
+  body.doors-index-page .doors-index-header,
+  body.doors-index-page .doors-index-projects {
+    width: calc(100% - 56px);
+  }
+  body.doors-index-page .doors-index-header { padding-top: 44px; }
+  body.doors-index-page .doors-index-meta { flex-direction: row; gap: 0; padding: 0; font-size: 16px; }
+  .doors-index-meta span { transform: translateX(4px); }
+  body.doors-index-page h1 {
+    width: 344px;
+    max-width: none;
+    margin: 32px 0 0 18px;
+    font-size: 32px;
+  }
+  body.doors-index-page .doors-index-projects {
+    display: flex;
+    flex-direction: column;
+    padding-top: 81px;
+    padding-bottom: 48px;
+  }
+  .doors-index-art { height: 207px; }
+  .doors-index-card--doors .doors-index-art img {
+    --art-x: 1px;
+    --art-y: -2px;
+    width: min(94%, 219px);
+  }
+  .doors-index-card--sign .doors-index-art img {
+    --art-x: 1px;
+    --art-y: -6px;
+    width: min(82%, 192px);
+  }
+  .doors-index-card--sign { margin-top: 82px; }
+  .doors-index-card--screens { margin-top: 56px; }
+  .doors-index-card--screens .doors-index-art img {
+    --art-x: 7.5px;
+    --art-y: -.2px;
+    width: min(100%, 248px);
+  }
+  .doors-index-card-title { margin-top: 30px; }
+  .doors-index-card--screens .doors-index-card-title { margin-top: 33px; }
+  .doors-index-card-title strong { font-size: 32px; }
+  .doors-index-card--doors .doors-index-card-title { transform: translateX(-.8px); }
+  .doors-index-card--sign .doors-index-card-title { transform: translateX(-2.5px); }
+  .doors-index-card--screens .doors-index-card-title { transform: translateX(-1.8px); }
+}
+
+/* Проект «Ширмы» */
+body.screens-page {
+  margin: 0;
+  color: #111;
+  background: #fff;
+  font-family: Inter, Arial, sans-serif;
+}
+body.screens-page .screens-header,
+body.screens-page .screens-case {
+  width: min(calc(100% - 230px), 1170px);
+  max-width: none;
+  margin: 0 auto;
+  padding-right: 0;
+  padding-left: 0;
+}
+body.screens-page .screens-header {
+  padding-top: 75px;
+  padding-bottom: 0;
+}
+body.screens-page .screens-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0;
+  color: #111;
+  font-size: 16px;
+  line-height: 1.45;
+}
+.screens-meta a { color: inherit; }
+.screens-meta span { transform: translateX(15px); }
+body.screens-page h1 {
+  margin: 77px 0 0;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+body.screens-page .screens-case {
+  padding-top: 60px;
+  padding-bottom: 76px;
+}
+body.screens-page .screens-copy {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+body.screens-page .screens-media {
+  position: relative;
+  left: 50%;
+  max-width: calc(100vw - 32px);
+  margin-right: 0;
+  margin-left: 0;
+  overflow: hidden;
+  transform: translateX(calc(-50% + 7.5px));
+}
+body.screens-page .screens-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+body.screens-page .screens-media--1 { width: 990px; aspect-ratio: 990 / 724; margin-top: 140px; }
+body.screens-page .screens-copy--2 { margin-top: 111px; }
+body.screens-page .screens-media--2 { width: 900px; aspect-ratio: 900 / 870; margin-top: 56px; }
+body.screens-page .screens-copy--3 { margin-top: 96px; }
+body.screens-page .screens-media--3 { width: 900px; aspect-ratio: 900 / 670; margin-top: 73px; }
+body.screens-page .screens-copy--4 { margin-top: 117px; }
+body.screens-page .screens-media--4 { width: 840px; aspect-ratio: 840 / 550; margin-top: 108px; }
+body.screens-page .screens-copy--5 { margin-top: 138px; }
+body.screens-page .screens-media--5 { width: 1100px; aspect-ratio: 1100 / 710; margin-top: 85px; }
+body.screens-page .screens-copy--6 { margin-top: 135px; }
+body.screens-page .screens-media--6 { width: 1160px; aspect-ratio: 1160 / 830; margin-top: 251px; background: #fff; cursor: ew-resize; touch-action: pan-y; }
+.screens-media--6:focus-visible { outline: 2px solid #111; outline-offset: 6px; }
+body.screens-page .screens-copy--final { margin-top: 128px; }
+body.screens-page .screens-media--7 { width: 1010px; aspect-ratio: 1010 / 740; margin-top: 160px; }
+body.screens-page .screens-media--8 { width: 1000px; aspect-ratio: 1000 / 560; margin-top: 116px; background: #323232; }
+
+@media (max-width: 699px) {
+  body.screens-page .screens-header,
+  body.screens-page .screens-case {
+    width: calc(100% - 56px);
+  }
+  body.screens-page .screens-header { padding-top: 44px; }
+  body.screens-page .screens-meta { flex-direction: row; gap: 0; padding: 0; font-size: 16px; }
+  .screens-meta span { transform: translateX(4px); }
+  body.screens-page h1 {
+    margin: 32px 0 0 18.22px;
+    font-size: 32px;
+  }
+  body.screens-page .screens-case { padding-top: 22px; padding-bottom: 48px; }
+  body.screens-page .screens-copy { width: min(292px, calc(100vw - 98px)); margin-left: 18.47px; }
+  body.screens-page .screens-copy--3 { width: min(337px, calc(100vw - 53px)); }
+  body.screens-page .screens-copy--4,
+  body.screens-page .screens-copy--5,
+  body.screens-page .screens-copy--6 { width: min(279px, calc(100vw - 111px)); margin-left: 18.22px; }
+  body.screens-page .screens-copy--final { width: min(277px, calc(100vw - 113px)); margin-left: 18px; }
+  body.screens-page .screens-media { transform: translateX(calc(-50% + 24.47px)); }
+  body.screens-page .screens-media--1 { width: 247.5px; margin-top: 62.25px; transform: translateX(calc(-50% + 24.72px)); }
+  body.screens-page .screens-copy--2 { margin-top: 29px; }
+  body.screens-page .screens-media--2 { width: 225px; margin-top: 37px; }
+  body.screens-page .screens-copy--3 { margin-top: 30.25px; }
+  body.screens-page .screens-media--3 { width: 225px; margin-top: 47px; }
+  body.screens-page .screens-copy--4 { margin-top: 23.3px; }
+  body.screens-page .screens-media--4 { width: 210px; margin-top: 38px; transform: translateX(calc(-50% + 24.97px)); }
+  body.screens-page .screens-copy--5 { margin-top: 27.3px; }
+  body.screens-page .screens-media--5 { width: 275px; margin-top: 47px; }
+  body.screens-page .screens-copy--6 { margin-top: 27.1px; }
+  body.screens-page .screens-media--6 { width: 290px; margin-top: 26px; transform: translateX(calc(-50% + 19.97px)); }
+  body.screens-page .screens-copy--final { margin-top: 45px; }
+  body.screens-page .screens-media--7 { width: 252.5px; margin-top: 45px; transform: translateX(calc(-50% + 25.22px)); }
+  body.screens-page .screens-media--8 { width: 250px; margin-top: 29px; transform: translateX(calc(-50% + 24.97px)); }
+}
+
+/* Проект «Двери» — координаты повторяют desktop- и mobile-фреймы Figma. */
+body.doors-project-page {
+  margin: 0;
+  overflow-x: hidden;
+  color: #111;
+  background: #fff;
+  font-family: Inter, Arial, sans-serif;
+}
+html:has(body.doors-project-page) { overflow-x: hidden; }
+body.doors-project-page .doors-project-canvas {
+  position: relative;
+  width: 1400px;
+  height: 17980px;
+  max-width: none;
+  margin: 0 auto;
+  padding: 0;
+}
+.doors-project-back,
+.doors-project-year,
+.doors-project-copy {
+  position: absolute;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+.doors-project-back { top: 75px; left: 115px; color: inherit; }
+.doors-project-year { top: 75px; right: 115px; }
+body.doors-project-page h1 {
+  position: absolute;
+  top: 175px;
+  left: 115px;
+  margin: 0;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+body.doors-project-page .doors-project-copy { left: 115px; max-width: none; margin: 0; text-wrap: balance; word-break: break-word; }
+.doors-project-copy--intro { top: 322px; width: 835px; transform: translateY(-100%); }
+.doors-project-copy--hat { top: 1307px; width: 1116px; }
+.doors-project-copy--alis { top: 2588px; width: 1102px; }
+.doors-project-copy--kot { top: 5317px; width: 1005px; }
+.doors-project-copy--queen { top: 6154px; width: 1073px; }
+.doors-project-copy--rabbit { top: 7705px; width: 1005px; }
+.doors-project-copy--duchess { top: 9345px; width: 1005px; }
+.doors-project-copy--pig { top: 10082px; width: 1059px; }
+.doors-project-copy--process { top: 11187px; width: 1005px; }
+.doors-project-copy--ready { top: 15146px; width: 1171px; }
+.doors-project-copy--visual { top: 15877px; width: 1171px; }
+.doors-project-copy--photo { top: 16521px; width: 1171px; }
+body.doors-project-page .doors-project-piece {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+}
+.doors-project-piece img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.doors-project-piece--do { top: 555px; left: 140px; width: 1106px; height: 608px; }
+.doors-project-piece--hat1 { top: 1536px; left: 105px; width: 576.232px; height: 860px; }
+.doors-project-piece--hat2 { top: 1530px; left: 681px; width: 549px; height: 915px; }
+.doors-project-piece--alis1 { top: 2760px; left: 109px; width: 572px; height: 832px; }
+.doors-project-piece--alis2 { top: 2760px; left: 630px; width: 640px; height: 846px; }
+.doors-project-piece--alis3 { top: 3649px; left: 109px; width: 555px; height: 677px; }
+.doors-project-piece--alis4 { top: 3651px; left: 681px; width: 595px; height: 675px; }
+.doors-project-piece--alis5 { top: 4389px; left: 109px; width: 810px; height: 779px; }
+.doors-project-piece--alis6 { top: 4362px; left: 959px; width: 283px; height: 825px; }
+.doors-project-piece--kot1 { top: 5490px; left: 141px; width: 581px; height: 501px; }
+.doors-project-piece--kot2 { top: 5472px; left: 791px; width: 417px; height: 548.388px; }
+.doors-project-piece--queen1 { top: 6279px; left: 398px; width: 628px; height: 491.529px; }
+.doors-project-piece--queen2 { top: 6843px; left: 149px; width: 1059px; height: 616.411px; }
+.doors-project-piece--rabbit1 { top: 7798px; left: 119px; width: 607px; height: 451px; }
+.doors-project-piece--rabbit2 { top: 7762px; left: 734px; width: 479px; height: 472px; }
+.doors-project-piece--rabbit3 { top: 8286px; left: 149px; width: 633px; height: 913px; }
+.doors-project-piece--rabbit4 { top: 8267px; left: 748px; width: 539px; height: 1001px; }
+.doors-project-piece--duchess1 { top: 9438px; left: 139px; width: 642.691px; height: 470px; }
+.doors-project-piece--duchess2 { top: 9437px; left: 747px; width: 489.089px; height: 471px; }
+.doors-project-piece--duchess3 { top: 10263px; left: 148px; width: 438px; height: 773px; }
+.doors-project-piece--duchess3 img { height: auto; }
+.doors-project-piece--duchess4 { top: 10272px; left: 668px; width: 601px; height: 817px; }
+.doors-project-piece--duchess4 img { width: auto; height: 100%; max-width: none; }
+.doors-project-piece--art1 { top: 11292px; left: 128px; width: 1150px; height: 1382px; }
+.doors-project-piece--art2 { top: 12674px; left: 103px; width: 1126px; height: 2364px; }
+.doors-project-piece--art3 { top: 15237px; left: 216px; width: 930px; height: 511px; }
+.doors-project-piece--art4 { top: 15969px; left: 216px; width: 930px; height: 468px; }
+.doors-project-piece--art5 { top: 16612px; left: 216px; width: 925px; height: 530px; }
+.doors-project-piece--art6 { top: 17194px; left: 216px; width: 552px; height: 736px; }
+.doors-project-piece--art7 { top: 17195px; left: 810px; width: 331px; height: 735px; }
+
+@media (min-width: 900px) and (max-width: 1399px) {
+  body.doors-project-page .doors-project-canvas {
+    width: 1400px;
+    height: calc(100vw * 12.842857);
+    margin-right: 0;
+    margin-left: calc((100vw - 1400px) / 2);
+    transform: scale(calc(100vw / 1400px));
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 899px) {
+  body.doors-project-page .doors-project-canvas { width: min(100%, 390px); height: 10220px; }
+  .doors-project-back { top: 44px; left: 27.75px; }
+  .doors-project-year { top: 44px; right: 39px; }
+  body.doors-project-page h1 { top: 99px; left: 46px; font-size: 32px; }
+  body.doors-project-page .doors-project-copy { left: 46px; max-width: calc(100vw - 92px); }
+  .doors-project-copy--intro { top: 292px; width: 292px; }
+  .doors-project-copy--hat { top: 541px; width: 323px; }
+  .doors-project-copy--alis { top: 1489px; width: 323px; }
+  .doors-project-copy--kot { top: 3592px; width: 291px; }
+  .doors-project-copy--queen { top: 4203px; width: 311px; }
+  .doors-project-copy--rabbit { top: 4742px; width: 291px; }
+  .doors-project-copy--duchess { top: 6047px; width: 291px; }
+  .doors-project-copy--pig { top: 6580px; width: 307px; }
+  .doors-project-copy--process { top: 7480px; width: 291px; }
+  .doors-project-copy--ready { top: 8565px; width: 339px; }
+  .doors-project-copy--visual { top: 8792px; width: 339px; }
+  .doors-project-copy--photo { top: 8996px; width: 339px; }
+  .doors-project-piece { left: 50%; transform: translateX(-50%); }
+  .doors-project-piece--do { top: 325px; width: 288px; height: 158px; }
+  .doors-project-piece--hat1 { top: 688px; width: 238px; height: 355.204px; }
+  .doors-project-piece--hat2 { top: 1065.16px; width: 226.752px; height: 377.921px; }
+  .doors-project-piece--alis1 { top: 1585px; width: 201.35px; height: 292.872px; }
+  .doors-project-piece--alis2 { top: 1895.85px; width: 225.286px; height: 297.8px; }
+  .doors-project-piece--alis3 { top: 2211.76px; width: 195.366px; height: 238.311px; }
+  .doors-project-piece--alis4 { top: 2459.43px; width: 209.446px; height: 237.607px; }
+  .doors-project-piece--alis5 { top: 2711.69px; width: 209.643px; height: 201.619px; }
+  .doors-project-piece--alis6 { top: 2928px; width: 216.795px; height: 632px; }
+  .doors-project-piece--kot1 { top: 3665px; width: 275px; height: 237.134px; }
+  .doors-project-piece--kot2 { top: 3918.17px; width: 197.375px; height: 259.564px; }
+  .doors-project-piece--queen1 { top: 4312px; width: 261px; height: 204.282px; }
+  .doors-project-piece--queen2 { top: 4529px; width: 295.007px; height: 171.715px; }
+  .doors-project-piece--rabbit1 { top: 4805px; width: 254px; height: 188.722px; }
+  .doors-project-piece--rabbit2 { top: 4993.59px; width: 238.839px; height: 235.349px; }
+  .doors-project-piece--rabbit3 { top: 5236px; width: 253.867px; height: 366.163px; }
+  .doors-project-piece--rabbit4 { top: 5616px; width: 216.168px; height: 401.455px; }
+  .doors-project-piece--duchess1 { top: 6112px; width: 252px; height: 184.288px; }
+  .doors-project-piece--duchess2 { top: 6296.39px; width: 232.244px; height: 223.655px; }
+  .doors-project-piece--duchess3 { top: 6677px; width: 203px; height: 357px; }
+  .doors-project-piece--duchess4 { top: 7050px; width: 278.129px; height: 378.089px; }
+  .doors-project-piece--art1 { top: 7528px; width: 288.849px; height: 347.121px; }
+  .doors-project-piece--art2 { top: 7884px; width: 292.931px; height: 615px; }
+  .doors-project-piece--art3 { top: 8606px; width: 259.071px; height: 142.35px; }
+  .doors-project-piece--art4 { top: 8835px; width: 259.071px; height: 130.371px; }
+  .doors-project-piece--art5 { top: 9065px; width: 257.679px; height: 147.643px; }
+  .doors-project-piece--art6 { top: 9244px; width: 258px; height: 344px; }
+  .doors-project-piece--art7 { top: 9614px; width: 257.85px; height: 572.567px; }
+}
+
+/* Проект «Знак» — desktop- и mobile-композиции из Figma. */
+body.sign-project-page {
+  margin: 0;
+  overflow-x: hidden;
+  color: #111;
+  background: #fff;
+  font-family: Inter, Arial, sans-serif;
+}
+html:has(body.sign-project-page) { overflow-x: hidden; }
+body.sign-project-page .sign-project-canvas {
+  position: relative;
+  width: 1400px;
+  height: 7000px;
+  max-width: none;
+  margin: 0 auto;
+  padding: 0;
+}
+.sign-project-back,
+.sign-project-year,
+.sign-project-copy {
+  position: absolute;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+.sign-project-back { top: 75px; left: 115px; color: inherit; }
+.sign-project-year { top: 75px; right: 115px; }
+body.sign-project-page h1 {
+  position: absolute;
+  top: 175px;
+  left: 115px;
+  margin: 0;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+body.sign-project-page .sign-project-copy {
+  left: 114px;
+  max-width: none;
+  margin: 0;
+  text-wrap: balance;
+  word-break: break-word;
+}
+body.sign-project-page .sign-project-copy--intro { top: 322px; left: 115px; width: 835px; transform: translateY(-100%); }
+.sign-project-copy--idea { top: 1307px; width: 1082px; }
+.sign-project-copy--process { top: 2512px; width: 1116px; }
+.sign-project-copy--final { top: 5039px; width: 1116px; }
+body.sign-project-page .sign-project-piece {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+}
+.sign-project-piece img { display: block; width: 100%; height: 100%; object-fit: fill; }
+.sign-project-piece--1 { top: 457px; left: 85px; width: 1200px; height: 716px; }
+.sign-project-piece--2 { top: 1510px; left: 101px; width: 1200px; height: 834px; }
+.sign-project-piece--3 { top: 2609px; left: 115px; width: 1120px; height: 854px; }
+.sign-project-piece--4 { top: 3511px; left: 115px; width: 1120px; height: 940px; }
+.sign-project-piece--5 { top: 4499px; left: 115px; width: 1120px; height: 456px; }
+.sign-project-piece--6 { top: 5136px; left: 85px; width: 1200px; height: 821px; }
+.sign-project-piece--7 { top: 6171px; left: 85px; width: 1200px; height: 674px; }
+
+@media (min-width: 900px) and (max-width: 1399px) {
+  body.sign-project-page .sign-project-canvas {
+    width: 1400px;
+    height: calc(100vw * 5);
+    margin-right: 0;
+    margin-left: calc((100vw - 1400px) / 2);
+    transform: scale(calc(100vw / 1400px));
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 899px) {
+  body.sign-project-page .sign-project-canvas { width: min(100%, 390px); height: 2000px; }
+  .sign-project-back { top: 44px; left: 27.75px; }
+  .sign-project-year { top: 44px; right: 39px; }
+  body.sign-project-page h1 { top: 99px; left: 46px; font-size: 32px; }
+  body.sign-project-page .sign-project-copy { left: 46px; max-width: calc(100vw - 64px); }
+  body.sign-project-page .sign-project-copy--intro { top: 292px; left: 46px; width: 292px; }
+  .sign-project-copy--idea { top: 544px; width: 301.414px; }
+  .sign-project-copy--process { top: 879.68px; width: 310.886px; }
+  .sign-project-copy--final { top: 1566px; width: 310.886px; }
+  .sign-project-piece { transform: none; }
+  .sign-project-piece--1 { top: 325px; left: 15.5718%; width: 261.151px; height: 155.82px; }
+  .sign-project-piece--2 { top: 683.97px; left: 16.4667%; width: 261.151px; height: 181.5px; }
+  .sign-project-piece--3 { top: 1008px; left: 17.2462%; width: 243.741px; height: 185.852px; }
+  .sign-project-piece--4 { top: 1204.3px; left: 17.2462%; width: 243.741px; height: 204.568px; }
+  .sign-project-piece--5 { top: 1419.31px; left: 17.2462%; width: 243.741px; height: 99.237px; }
+  .sign-project-piece--6 { top: 1610.37px; left: 15.5718%; width: 261.151px; height: 178.671px; }
+  .sign-project-piece--7 { top: 1803px; left: 15.5718%; width: 261.151px; height: 146.68px; }
+}
+
+/* Временный режим инспектора: включается добавлением ?styles=1 к адресу страницы. */
+.style-inspection h1,
+.style-inspection h2,
+.style-inspection h3,
+.style-inspection main > p,
+.style-inspection main section > p {
+  position: relative;
+  outline: 1px dashed currentColor;
+  outline-offset: 5px;
+}
+.style-inspection h1 { color: #d60000; }
+.style-inspection h2 { color: #078a32; }
+.style-inspection h3 { color: #075ad8; }
+.style-inspection main > p,
+.style-inspection main section > p { color: #5d32a8; }
+.style-inspection [data-style-label]::after {
+  position: absolute;
+  z-index: 20;
+  top: -1.6em;
+  left: 0;
+  padding: .2em .45em;
+  color: #fff;
+  background: currentColor;
+  font: 500 11px/1.1 Inter, Arial, sans-serif;
+  letter-spacing: 0;
+  white-space: nowrap;
+  content: attr(data-style-label);
 }
