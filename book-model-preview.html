@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Превью физической 3D-книги</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      background: #f4f3f0;
+      color: #151515;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 38px;
+    }
+    .preview-meta {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+    .preview-note {
+      max-width: 330px;
+      margin: 0;
+      color: #686868;
+      font-size: 14px;
+      line-height: 1.3;
+      text-align: right;
+    }
+    .book-prototype {
+      position: relative;
+      width: 100%;
+      height: min(76vh, 760px);
+      min-height: 520px;
+      overflow: hidden;
+      background: #fff;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .book-prototype:active { cursor: grabbing; }
+    .book-prototype:focus-visible { outline: 2px solid #8d2528; outline-offset: 3px; }
+    .book-prototype canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      filter: saturate(1.16) contrast(1.025) brightness(1.015);
+    }
+    .hint {
+      position: absolute;
+      right: 18px;
+      bottom: 16px;
+      z-index: 2;
+      margin: 0;
+      color: #777;
+      font-size: 13px;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+    .book-prototype.has-interacted .hint { opacity: 0; }
+    @media (max-width: 700px) {
+      main { width: min(100% - 20px, 520px); padding-top: 18px; }
+      .preview-meta { display: block; }
+      .preview-note { margin-top: 12px; text-align: left; }
+      .book-prototype { height: 68vh; min-height: 440px; }
+      .hint { right: 12px; bottom: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="preview-meta">
+      <h1>Превью физической модели книги</h1>
+      <p class="preview-note">Отдельный тестовый просмотр. Страница проекта пока не изменена.</p>
+    </div>
+    <section
+      class="book-prototype"
+      tabindex="0"
+      role="application"
+      aria-label="Тестовая интерактивная 3D-модель книги. Перетащите книгу мышью или пальцем, чтобы повернуть её."
+    >
+      <p class="hint">Потяните, чтобы повернуть книгу</p>
+    </section>
+  </main>
+  <script type="module" src="./js/orange-book-prototype.js?v=20261014-15"></script>
+</body>
+</html>
