@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Превью 3D-листовок</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #dedede; color: #151515; font: 400 16px/1.35 Arial, Helvetica, sans-serif; }
+    main { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 42px; }
+    header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+    h1 { max-width: 700px; margin: 0; font-size: clamp(30px, 5vw, 52px); font-weight: 400; line-height: 1; }
+    header p { max-width: 320px; margin: 0; color: #666; font-size: 14px; text-align: right; }
+    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .preview-card { margin: 0; min-width: 0; }
+    .preview-card figcaption { margin-bottom: 10px; font-size: 14px; }
+    .flyer-3d-viewer { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #dedede; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .flyer-3d-viewer:active { cursor: grabbing; }
+    .flyer-3d-viewer:focus-visible { outline: 2px solid #151515; outline-offset: 3px; }
+    .flyer-3d-viewer::before { position: absolute; inset: 0; display: grid; place-items: center; color: #777; content: 'Загрузка 3D-листовки…'; }
+    .flyer-3d-viewer canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+    .flyer-3d-viewer.is-ready::before { display: none; }
+    .preview-note { margin: 22px 0 0; color: #555; font-size: 14px; }
+    .layout-editor { width: min(100%, 560px); margin: 22px 0 0 auto; padding: 16px; background: rgba(255, 255, 255, .46); }
+    .layout-editor h2 { margin: 0 0 12px; font-size: 16px; font-weight: 400; }
+    .layout-editor__tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .layout-editor button { border: 1px solid #999; border-radius: 0; background: transparent; padding: 6px 9px; color: inherit; font: inherit; font-size: 14px; cursor: pointer; }
+    .layout-editor button[aria-pressed="true"] { background: #151515; border-color: #151515; color: #fff; }
+    .layout-editor__controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+    .layout-editor label { display: grid; grid-template-columns: auto 1fr 48px; align-items: center; gap: 8px; font-size: 13px; }
+    .layout-editor input { width: 100%; accent-color: #151515; }
+    .layout-editor output { font-variant-numeric: tabular-nums; text-align: right; }
+    code { padding: .12em .3em; background: #e8e6e1; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    @media (max-width: 700px) {
+      main { width: min(100% - 24px, 520px); padding-top: 20px; }
+      header { display: block; }
+      header p { margin-top: 12px; text-align: left; }
+      .preview-grid { grid-template-columns: 1fr; }
+      .layout-editor { width: 100%; }
+      .layout-editor__controls { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Превью 3D-листовок</h1>
+      <p>Перетаскивайте мышью или пальцем. Колёсико не меняет масштаб.</p>
+    </header>
+    <section class="preview-grid" aria-label="Демонстрация 3D-компонента листовки">
+      <figure class="preview-card">
+        <figcaption>Одна листовка</figcaption>
+        <div class="flyer-3d-viewer" id="flyer-single" tabindex="0" role="application" aria-label="Одна интерактивная 3D-листовка"></div>
+      </figure>
+      <figure class="preview-card">
+        <figcaption>Композиция из двух листовок</figcaption>
+        <div class="flyer-3d-viewer" id="flyer-pair" tabindex="0" role="application" aria-label="Композиция из двух интерактивных 3D-листовок"></div>
+      </figure>
+    </section>
+    <p class="preview-note">Чтобы поставить свои изображения, передайте в <code>front</code> и <code>back</code> пути к PNG/JPG. Положение, угол и масштаб каждой листовки задаются в объекте <code>flyers</code>.</p>
+    <section class="layout-editor" aria-label="Редактор композиции из двух листовок">
+      <h2>Редактор композиции</h2>
+      <div class="layout-editor__tabs" role="group" aria-label="Выбор листовки">
+        <button type="button" data-flyer-select="0" aria-pressed="true">Листовка 1</button>
+        <button type="button" data-flyer-select="1" aria-pressed="false">Листовка 2</button>
+      </div>
+      <div class="layout-editor__controls">
+        <label>X <input data-transform="position.x" type="range" min="-1.5" max="1.5" step="0.01"><output></output></label>
+        <label>Y <input data-transform="position.y" type="range" min="-1.5" max="1.5" step="0.01"><output></output></label>
+        <label>Глубина <input data-transform="position.z" type="range" min="-0.8" max="0.8" step="0.01"><output></output></label>
+        <label>Наклон X <input data-transform="rotation.x" type="range" min="-1.57" max="1.57" step="0.01"><output></output></label>
+        <label>Наклон Y <input data-transform="rotation.y" type="range" min="-1.57" max="1.57" step="0.01"><output></output></label>
+        <label>Поворот Z <input data-transform="rotation.z" type="range" min="-3.14" max="3.14" step="0.01"><output></output></label>
+      </div>
+    </section>
+  </main>
+  <script type="module">
+    import { mountFlyerModel } from './js/flyer-3d.js?v=20261015-1';
+
+    mountFlyerModel(document.querySelector('#flyer-single'), {
+      flyers: [{
+        front: './img/2_ver/PERS_2/for3d/listovka-textures/comp1_front_v2.png',
+        back: './img/2_ver/PERS_2/for3d/listovka-textures/comp1_back_v2.png'
+      }]
+    });
+
+    const pairModel = await mountFlyerModel(document.querySelector('#flyer-pair'), {
+      mode: 'composition',
+      initialRotation: [-0.06, 0.08, 0],
+      flyers: [
+        {
+          front: './img/2_ver/PERS_2/for3d/listovka-textures/comp2_1_v2.png',
+          back: 'solid:white',
+          position: [-0.52, -0.35, -0.06],
+          rotation: [0, 0, -0.25],
+          scale: 0.82
+        },
+        {
+          front: './img/2_ver/PERS_2/for3d/listovka-textures/comp2_2_v2.png',
+          back: 'solid:white',
+          position: [0.38, 0.35, 0.1],
+          rotation: [0, 0, 0.38],
+          scale: 0.82
+        }
+      ]
+    });
+
+    let selectedFlyer = 0;
+    const controls = [...document.querySelectorAll('[data-transform]')];
+    const tabs = [...document.querySelectorAll('[data-flyer-select]')];
+    const readProperty = (flyer, property) => {
+      const [group, axis] = property.split('.');
+      return flyer[group][axis];
+    };
+    const writeProperty = (flyer, property, value) => {
+      const [group, axis] = property.split('.');
+      flyer[group][axis] = value;
+    };
+    const syncEditor = () => {
+      const flyer = pairModel.flyers[selectedFlyer];
+      controls.forEach((control) => {
+        const value = readProperty(flyer, control.dataset.transform);
+        control.value = value;
+        control.nextElementSibling.value = Number(value).toFixed(2);
+      });
+      tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(Number(tab.dataset.flyerSelect) === selectedFlyer)));
+    };
+    tabs.forEach((tab) => tab.addEventListener('click', () => {
+      selectedFlyer = Number(tab.dataset.flyerSelect);
+      syncEditor();
+    }));
+    controls.forEach((control) => control.addEventListener('input', () => {
+      writeProperty(pairModel.flyers[selectedFlyer], control.dataset.transform, Number(control.value));
+      control.nextElementSibling.value = Number(control.value).toFixed(2);
+      pairModel.render();
+    }));
+    syncEditor();
+  </script>
+</body>
+</html>

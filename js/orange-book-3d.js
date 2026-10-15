@@ -1,4 +1,4 @@
-import { initBookModel } from './orange-book-prototype.js?v=20261014-16';
+import { initBookModel } from './orange-book-prototype.js?v=20261015-20';
 
 const COMPONENT_NAME = '3D_COMP';
 const COMPONENT_SELECTOR = `[data-component="${COMPONENT_NAME}"]`;
@@ -16,7 +16,15 @@ export function mount3DComp(viewer) {
 
   const initialization = initializationQueue.then(() => initBookModel(viewer, {
     // Keep the approved project-page brightness for every 3D_COMP copy.
-    toneMappingExposure: 1.06,
+    toneMappingExposure: 1.26,
+    artworkEmissiveIntensity: 0.06,
+    colourSaturation: 1.1,
+    keyLightIntensity: 1.1,
+    fillLightIntensity: 0.25,
+    rimLightIntensity: 0.9,
+    artworkRoughness: 0.65,
+    artworkBumpScale: 0.02,
+    shadowOpacity: 0,
     initialRotation: [-0.18, 0.55, -0.045],
     desktopCameraZ: 40.2,
     mobileCameraZ: 43.5

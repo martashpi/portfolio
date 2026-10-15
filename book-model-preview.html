@@ -59,7 +59,6 @@
       display: block;
       width: 100%;
       height: 100%;
-      filter: saturate(1.16) contrast(1.025) brightness(1.015);
     }
     .hint {
       position: absolute;
@@ -73,12 +72,28 @@
       transition: opacity 180ms ease;
     }
     .book-prototype.has-interacted .hint { opacity: 0; }
+    .book-editor {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+      padding: 18px;
+      background: #fff;
+    }
+    .book-editor label { display: grid; gap: 8px; font-size: 14px; }
+    .book-editor__label { display: flex; justify-content: space-between; gap: 8px; }
+    .book-editor output { color: #686868; font-variant-numeric: tabular-nums; }
+    .book-editor input { width: 100%; accent-color: #8d2528; }
+    .book-editor__actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; }
+    .book-editor button { border: 1px solid #151515; border-radius: 0; background: #151515; color: #fff; padding: 9px 12px; font: inherit; cursor: pointer; }
+    .book-editor__status { color: #686868; font-size: 13px; }
     @media (max-width: 700px) {
       main { width: min(100% - 20px, 520px); padding-top: 18px; }
       .preview-meta { display: block; }
       .preview-note { margin-top: 12px; text-align: left; }
       .book-prototype { height: 68vh; min-height: 440px; }
       .hint { right: 12px; bottom: 12px; }
+      .book-editor { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -96,7 +111,87 @@
     >
       <p class="hint">Потяните, чтобы повернуть книгу</p>
     </section>
+    <section class="book-editor" aria-label="Временный редактор цвета книги">
+      <label>
+        <span class="book-editor__label">Яркость сцены <output data-output="toneMappingExposure"></output></span>
+        <input data-book-control="toneMappingExposure" type="range" min="0.85" max="1.3" step="0.01" value="1.26">
+      </label>
+      <label>
+        <span class="book-editor__label">Яркость печати <output data-output="artworkEmissiveIntensity"></output></span>
+        <input data-book-control="artworkEmissiveIntensity" type="range" min="0" max="0.12" step="0.005" value="0.06">
+      </label>
+      <label>
+        <span class="book-editor__label">Насыщенность <output data-output="colourSaturation"></output></span>
+        <input data-book-control="colourSaturation" type="range" min="0.6" max="1.1" step="0.01" value="1.1">
+      </label>
+      <label>
+        <span class="book-editor__label">Основной свет <output data-output="keyLightIntensity"></output></span>
+        <input data-book-control="keyLightIntensity" type="range" min="1" max="4" step="0.05" value="1.1">
+      </label>
+      <label>
+        <span class="book-editor__label">Заполняющий свет <output data-output="fillLightIntensity"></output></span>
+        <input data-book-control="fillLightIntensity" type="range" min="0" max="2" step="0.05" value="0.25">
+      </label>
+      <label>
+        <span class="book-editor__label">Контурный свет <output data-output="rimLightIntensity"></output></span>
+        <input data-book-control="rimLightIntensity" type="range" min="0" max="2" step="0.05" value="0.9">
+      </label>
+      <label>
+        <span class="book-editor__label">Матовость обложки <output data-output="artworkRoughness"></output></span>
+        <input data-book-control="artworkRoughness" type="range" min="0.55" max="1" step="0.01" value="0.65">
+      </label>
+      <label>
+        <span class="book-editor__label">Фактура бумаги <output data-output="artworkBumpScale"></output></span>
+        <input data-book-control="artworkBumpScale" type="range" min="0" max="0.02" step="0.001" value="0.02">
+      </label>
+      <label>
+        <span class="book-editor__label">Тень <output data-output="shadowOpacity"></output></span>
+        <input data-book-control="shadowOpacity" type="range" min="0" max="0.3" step="0.01" value="0">
+      </label>
+      <div class="book-editor__actions">
+        <button type="button" data-copy-book-settings>Скопировать настройки</button>
+        <span class="book-editor__status" data-book-status></span>
+      </div>
+    </section>
   </main>
-  <script type="module" src="./js/orange-book-prototype.js?v=20261014-15"></script>
+  <script type="module">
+    import { initBookModel } from './js/orange-book-prototype.js?v=20261015-21';
+
+    const settings = {
+      toneMappingExposure: 1.26,
+      artworkEmissiveIntensity: 0.06,
+      colourSaturation: 1.1,
+      keyLightIntensity: 1.1,
+      fillLightIntensity: 0.25,
+      rimLightIntensity: 0.9,
+      artworkRoughness: 0.65,
+      artworkBumpScale: 0.02,
+      shadowOpacity: 0
+    };
+    const model = await initBookModel(document.querySelector('.book-prototype'), settings);
+    const controls = [...document.querySelectorAll('[data-book-control]')];
+    const status = document.querySelector('[data-book-status]');
+    const update = () => {
+      model.setAppearance(settings);
+      controls.forEach((control) => {
+        const digits = ['artworkEmissiveIntensity', 'artworkBumpScale'].includes(control.dataset.bookControl) ? 3 : 2;
+        document.querySelector(`[data-output="${control.dataset.bookControl}"]`).textContent = Number(settings[control.dataset.bookControl]).toFixed(digits);
+      });
+    };
+    controls.forEach((control) => control.addEventListener('input', () => {
+      settings[control.dataset.bookControl] = Number(control.value);
+      update();
+    }));
+    document.querySelector('[data-copy-book-settings]').addEventListener('click', async () => {
+      const value = JSON.stringify(settings);
+      try {
+        await navigator.clipboard.writeText(value);
+        status.textContent = 'Настройки скопированы.';
+      } catch {
+        status.textContent = value;
+      }
+    });
+    update();
+  </script>
 </body>
 </html>

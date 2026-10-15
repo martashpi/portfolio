@@ -3,7 +3,9 @@ import * as THREE from './vendor/three.module.min.js';
 // Reuse decoded source images when several 3D_COMP instances are on one page.
 THREE.Cache.enabled = true;
 
-const container = document.querySelector('.book-prototype');
+const container = document.querySelector('.book-prototype[data-auto-init-book]');
+const DEFAULT_ARTWORK_EMISSIVE_INTENSITY = 0.055;
+const DEFAULT_COLOUR_SATURATION = 0.9;
 
 if (container) {
   initBookModel(container).catch((error) => {
@@ -14,19 +16,23 @@ if (container) {
 export async function initBookModel(viewer, options = {}) {
   const {
     toneMappingExposure = 1.08,
+    artworkEmissiveIntensity = DEFAULT_ARTWORK_EMISSIVE_INTENSITY,
+    colourSaturation = DEFAULT_COLOUR_SATURATION,
     initialRotation = [-0.18, 0.55, -0.045],
     desktopCameraZ = 40.2,
     mobileCameraZ = 43.5
   } = options;
+  const transparent = viewer.dataset.transparent === 'true';
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
-    alpha: false,
+    alpha: transparent,
     powerPreference: 'high-performance'
   });
-  renderer.setClearColor(0xffffff, 1);
+  renderer.setClearColor(0xffffff, transparent ? 0 : 1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = toneMappingExposure;
+  renderer.domElement.style.filter = `saturate(${colourSaturation})`;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -46,9 +52,9 @@ export async function initBookModel(viewer, options = {}) {
   const textureLoader = new THREE.TextureLoader();
   const textureBase = new URL('../img/2_ver/ORANGE_2/book-textures/', import.meta.url);
   const [frontTexture, backTexture, spineTexture] = await Promise.all([
-    loadArtwork(textureLoader, new URL('front.png', textureBase), maxAnisotropy),
-    loadArtwork(textureLoader, new URL('back.png', textureBase), maxAnisotropy),
-    loadArtwork(textureLoader, new URL('spine.png', textureBase), maxAnisotropy)
+    loadArtwork(textureLoader, new URL('front_v2.png', textureBase), maxAnisotropy),
+    loadArtwork(textureLoader, new URL('back_v2.png', textureBase), maxAnisotropy),
+    loadArtwork(textureLoader, new URL('spine_v2.png', textureBase), maxAnisotropy)
   ]);
 
   const clothBump = createClothBump(maxAnisotropy);
@@ -115,10 +121,14 @@ export async function initBookModel(viewer, options = {}) {
     clearcoat: 0.012,
     clearcoatRoughness: 0.97,
     bumpMap: spineBump,
-    bumpScale: 0.007
+    bumpScale: 0.007,
+    // Keep the printed spine as bright as the front and back cover artwork.
+    emissive: 0xffffff,
+    emissiveMap: spineTexture,
+    emissiveIntensity: artworkEmissiveIntensity
   });
-  const frontMaterial = createArtworkMaterial(frontTexture, clothBump);
-  const backMaterial = createArtworkMaterial(backTexture, clothBump);
+  const frontMaterial = createArtworkMaterial(frontTexture, clothBump, artworkEmissiveIntensity);
+  const backMaterial = createArtworkMaterial(backTexture, clothBump, artworkEmissiveIntensity);
   const unifiedCover = new THREE.Mesh(
     createUnifiedCoverGeometry({
       width: 21,
@@ -161,23 +171,55 @@ export async function initBookModel(viewer, options = {}) {
   rimLight.position.set(-13, 4, -15);
   scene.add(rimLight);
 
-  const shadowPlane = new THREE.Mesh(
-    new THREE.PlaneGeometry(35, 19),
-    new THREE.ShadowMaterial({ color: 0x342b25, opacity: 0.14, transparent: true })
-  );
-  shadowPlane.rotation.x = -Math.PI / 2;
-  shadowPlane.position.set(0, -12.1, -1.8);
-  shadowPlane.receiveShadow = true;
-  scene.add(shadowPlane);
+  let shadowMaterial = null;
+  if (!transparent) {
+    shadowMaterial = new THREE.ShadowMaterial({ color: 0x342b25, opacity: 0.14, transparent: true });
+    const shadowPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(35, 19),
+      shadowMaterial
+    );
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.set(0, -12.1, -1.8);
+    shadowPlane.receiveShadow = true;
+    scene.add(shadowPlane);
+  }
 
   installInteraction(viewer, renderer, scene, camera, book, {
     desktopCameraZ,
     mobileCameraZ
   });
-  return { renderer, scene, camera, book };
+  const artworkMaterials = [frontMaterial, backMaterial, spineMaterial];
+  const setAppearance = ({
+    toneMappingExposure: nextExposure,
+    artworkEmissiveIntensity: nextPrintBrightness,
+    colourSaturation: nextSaturation,
+    keyLightIntensity: nextKeyLight,
+    fillLightIntensity: nextFillLight,
+    rimLightIntensity: nextRimLight,
+    artworkRoughness: nextRoughness,
+    artworkBumpScale: nextBumpScale,
+    shadowOpacity: nextShadowOpacity
+  } = {}) => {
+    if (Number.isFinite(nextExposure)) renderer.toneMappingExposure = nextExposure;
+    if (Number.isFinite(nextPrintBrightness)) {
+      artworkMaterials.forEach((material) => { material.emissiveIntensity = nextPrintBrightness; });
+    }
+    if (Number.isFinite(nextSaturation)) renderer.domElement.style.filter = `saturate(${nextSaturation})`;
+    if (Number.isFinite(nextKeyLight)) keyLight.intensity = nextKeyLight;
+    if (Number.isFinite(nextFillLight)) fillLight.intensity = nextFillLight;
+    if (Number.isFinite(nextRimLight)) rimLight.intensity = nextRimLight;
+    if (Number.isFinite(nextRoughness)) artworkMaterials.forEach((material) => { material.roughness = nextRoughness; });
+    if (Number.isFinite(nextBumpScale)) artworkMaterials.forEach((material) => { material.bumpScale = nextBumpScale; });
+    if (shadowMaterial && Number.isFinite(nextShadowOpacity)) shadowMaterial.opacity = nextShadowOpacity;
+    renderer.render(scene, camera);
+  };
+  // Page-level components can pass a complete appearance preset; omitted values
+  // keep the physical defaults above.
+  setAppearance(options);
+  return { renderer, scene, camera, book, artworkMaterials, setAppearance };
 }
 
-function createArtworkMaterial(map, bumpMap) {
+function createArtworkMaterial(map, bumpMap, emissiveIntensity) {
   return new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
     map,
@@ -191,7 +233,7 @@ function createArtworkMaterial(map, bumpMap) {
     bumpScale: 0.0065,
     emissive: 0xffffff,
     emissiveMap: map,
-    emissiveIntensity: 0.055
+    emissiveIntensity
   });
 }
 
