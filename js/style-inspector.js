@@ -12,7 +12,7 @@
     return `${name} · ${size}px / ${lineHeight}px · ${weight}`;
   };
 
-  document.querySelectorAll('h1, h2, h3, main > p, main section > p, .moo-lead').forEach((element) => {
+  document.querySelectorAll('h1, h2, h3, main > p, main section > p').forEach((element) => {
     element.dataset.styleLabel = labelFor(element);
   });
 })();

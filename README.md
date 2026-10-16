@@ -31,3 +31,39 @@ Personal portfolio site.
 ```
 
 Можно добавить несколько `3D_COMP` на одну страницу. Каждый экземпляр вращается независимо, а модель и настройки берутся из общих файлов `js/orange-book-prototype.js` и `js/orange-book-3d.js`, поэтому изменения применяются ко всем копиям сразу. Компоненты загружаются только перед появлением на экране.
+
+## Компоненты YOLKA_COMP и LISTS_COMP
+
+`YOLKA_COMP` — одна квадратная 3D-листовка, `LISTS_COMP` — композиция из двух. Они не связаны с 3D-книгой. Демонстрация находится в `flyer-model-preview.html`.
+
+Для размещения на странице добавьте контейнер с одним из имён и задайте изображения через `data-flyer-config`:
+
+```html
+<div class="flyer-3d-viewer" data-component="YOLKA_COMP"
+  data-flyer-config='{"flyers":[{"front":"img/front.png","back":"img/back.jpg"}]}'
+  tabindex="0"></div>
+
+<script type="module" src="путь/к/js/flyer-3d.js"></script>
+```
+
+`LISTS_COMP` принимает два объекта в массиве `flyers`; у каждого можно задать собственные `front`, `back`, `position`, `rotation` и `scale`. Модуль сам находит и инициализирует эти контейнеры перед появлением на экране.
+
+Для программного размещения доступны `mountYolkaComp`, `mountListsComp` и общий `mountFlyerModel`:
+
+```js
+import { mountYolkaComp } from './js/flyer-3d.js';
+
+mountYolkaComp(container, {
+  flyers: [
+    {
+      front: 'img/front.png',
+      back: 'img/back.jpg',
+      position: [0, 0, 0],
+      rotation: [0, 0, 0],
+      scale: 1
+    }
+  ]
+});
+```
+
+В `flyers` можно передать несколько элементов: они сохраняют взаимное положение и вращаются как одна композиция. Режимы `demo:*` используются только в предпросмотре; замените их путями к PNG/JPG.

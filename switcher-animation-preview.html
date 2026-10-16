@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Покадровый переход — настройка</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, sans-serif;
+      color: #141414;
+      background: #f4f4f2;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px; }
+    button, input { font: inherit; }
+    .preview-page { width: min(1180px, 100%); margin: 0 auto; }
+    .preview-header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+    h1 { margin: 0 0 7px; font-size: 26px; line-height: 1.05; }
+    .preview-header p { max-width: 720px; margin: 0; color: #606060; font-size: 14px; line-height: 1.45; }
+    .status { flex: none; color: #606060; font-size: 13px; }
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(0, 306fr) minmax(0, 631fr);
+      align-items: end;
+      gap: 24px;
+      min-height: 520px;
+      padding: 48px;
+      background: #fff;
+    }
+    .switcher-card {
+      position: relative;
+      display: block;
+      width: 100%;
+      overflow: visible;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      appearance: none;
+      touch-action: manipulation;
+    }
+    .switcher-card--narrow { aspect-ratio: 306 / 408; }
+    .switcher-card--wide { aspect-ratio: 631 / 408; }
+    .switcher-card:focus-visible { outline: 3px solid #246bfd; outline-offset: 5px; }
+    .motion-layer {
+      position: absolute;
+      inset: 0;
+      display: block;
+      transform-origin: 50% 55%;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+    .motion-layer[hidden] { display: none; }
+    .switcher-card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+    .card-caption { margin-top: 10px; color: #606060; font-size: 13px; }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px 28px;
+      margin-top: 28px;
+    }
+    .control { display: grid; gap: 8px; }
+    .control label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
+    .control output { color: #606060; font-variant-numeric: tabular-nums; }
+    input[type="range"] { width: 100%; accent-color: #141414; }
+    .corner-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+    .corner-picker button {
+      min-width: 42px;
+      min-height: 34px;
+      padding: 5px 9px;
+      border: 1px solid #aaa;
+      border-radius: 0;
+      color: #141414;
+      background: transparent;
+      cursor: pointer;
+    }
+    .corner-picker button[aria-pressed="true"] { color: #fff; border-color: #141414; background: #141414; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .actions button {
+      min-height: 40px;
+      padding: 8px 14px;
+      border: 1px solid #141414;
+      border-radius: 0;
+      color: #141414;
+      background: transparent;
+      cursor: pointer;
+    }
+    .actions button[aria-pressed="true"], .actions button.primary { color: #fff; background: #141414; }
+    .timeline { margin-top: 34px; }
+    .timeline h2 { margin: 0 0 14px; font-size: 16px; }
+    .frames { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+    .frame {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid #cfcfcb;
+      color: inherit;
+      background: #fff;
+      text-align: left;
+      cursor: pointer;
+    }
+    .frame[aria-pressed="true"] { border-color: #141414; box-shadow: inset 0 0 0 1px #141414; }
+    .frame-visual { position: relative; overflow: hidden; aspect-ratio: 631 / 408; background: #eee; }
+    .frame-motion { position: absolute; inset: 0; display: block; transform-origin: 50% 55%; }
+    .frame-visual img { display: block; width: 100%; height: 100%; object-fit: fill; transform-origin: 0 0; }
+    .frame strong { font-size: 13px; font-weight: 600; }
+    .frame span { color: #606060; font-size: 12px; line-height: 1.25; }
+    .settings-readout { margin-top: 24px; padding: 14px; background: #e8e8e5; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
+    @media (max-width: 760px) {
+      body { padding: 18px; }
+      .preview-header { display: block; }
+      .status { margin-top: 12px; }
+      .stage { grid-template-columns: 1fr; align-items: start; min-height: 0; padding: 24px; }
+      .switcher-card--narrow { width: 48%; }
+      .controls { grid-template-columns: 1fr; }
+      .frames { grid-template-columns: 1fr 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .status::after { content: " · в системе включено уменьшение движения"; }
+    }
+  </style>
+</head>
+<body>
+  <main class="preview-page">
+    <header class="preview-header">
+      <div>
+        <h1>Покадровый переход</h1>
+        <p>Нажмите на любую карточку, чтобы запустить переход. Пять кадров внизу показывают траекторию: исходное положение, уход, момент замены, приход и остановку.</p>
+      </div>
+      <div class="status" id="status" aria-live="polite">Готово к просмотру</div>
+    </header>
+
+    <section class="stage" aria-label="Предпросмотр двух карточек">
+      <div>
+        <button class="switcher-card switcher-card--narrow" type="button" data-card="narrow" aria-label="Сменить вариант иллюстрации">
+          <span class="motion-layer"><img src="img/2_ver/PERS_2/list/pers_16_1.png" alt="Первый вариант иллюстрации"></span>
+          <span class="motion-layer" hidden><img src="img/2_ver/PERS_2/list/pers_16_2.png" alt="Второй вариант иллюстрации"></span>
+        </button>
+        <div class="card-caption">Узкая карточка · нажмите для смены</div>
+      </div>
+      <div>
+        <button class="switcher-card switcher-card--wide" type="button" data-card="wide" aria-label="Сменить вариант листовки">
+          <span class="motion-layer"><img src="img/2_ver/PERS_2/list/pers_15_1.png" alt="Первый вариант листовки"></span>
+          <span class="motion-layer" hidden><img src="img/2_ver/PERS_2/list/pers_15_2.png" alt="Второй вариант листовки"></span>
+        </button>
+        <div class="card-caption">Широкая карточка · нажмите для смены</div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Настройки выбранного кадра">
+      <div class="control">
+        <label for="angle">Наклон выбранного кадра <output id="angle-value">0°</output></label>
+        <input id="angle" type="range" min="-10" max="10" step="0.5" value="0">
+      </div>
+      <div class="control">
+        <label for="shift-x">Смещение по горизонтали <output id="shift-x-value">0 px</output></label>
+        <input id="shift-x" type="range" min="-70" max="70" step="1" value="0">
+      </div>
+      <div class="control">
+        <label for="shift-y">Смещение по вертикали <output id="shift-y-value">0 px</output></label>
+        <input id="shift-y" type="range" min="-35" max="35" step="1" value="0">
+      </div>
+      <div class="control">
+        <label>Настраиваемый угол изображения</label>
+        <div class="corner-picker" role="group" aria-label="Выберите угол изображения">
+          <button type="button" data-corner="tl" aria-pressed="true">↖</button>
+          <button type="button" data-corner="tr" aria-pressed="false">↗</button>
+          <button type="button" data-corner="br" aria-pressed="false">↘</button>
+          <button type="button" data-corner="bl" aria-pressed="false">↙</button>
+        </div>
+      </div>
+      <div class="control">
+        <label for="corner-x">Угол по горизонтали <output id="corner-x-value">0 px</output></label>
+        <input id="corner-x" type="range" min="-30" max="30" step="1" value="0">
+      </div>
+      <div class="control">
+        <label for="corner-y">Угол по вертикали <output id="corner-y-value">0 px</output></label>
+        <input id="corner-y" type="range" min="-30" max="30" step="1" value="0">
+      </div>
+      <div class="control">
+        <label for="duration">Длительность всей анимации <output id="duration-value">700 мс</output></label>
+        <input id="duration" type="range" min="300" max="1400" step="50" value="700">
+      </div>
+      <div class="control">
+        <label for="interval">Автосмена <output id="interval-value">10 сек</output></label>
+        <input id="interval" type="range" min="6" max="20" step="1" value="10">
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="primary" type="button" id="play-both">Показать переход</button>
+      <button type="button" id="auto" aria-pressed="false">Автосмена выключена</button>
+      <button type="button" id="reset">Вернуть исходные настройки</button>
+    </div>
+
+    <section class="timeline" aria-label="Пять кадров перехода">
+      <h2>Пять кадров анимации</h2>
+      <div class="frames" id="frames"></div>
+    </section>
+
+    <div class="settings-readout" id="settings-readout" aria-live="polite"></div>
+  </main>
+
+  <script>
+    const globalDefaults = { duration: 700, interval: 10 };
+    const frameDefaults = [
+      { x: 0, y: 0, angle: 0, corners: { tl: [0, 0], tr: [0, 0], br: [0, 0], bl: [0, 0] } },
+      { x: 14, y: -5, angle: 2, corners: { tl: [0, 0], tr: [2, -2], br: [0, 0], bl: [0, 0] } },
+      { x: -28, y: 10, angle: -4, corners: { tl: [0, 0], tr: [0, 0], br: [2, 2], bl: [-2, 2] } },
+      { x: -14, y: 5, angle: -2, corners: { tl: [0, 0], tr: [0, 0], br: [0, 0], bl: [-2, 2] } },
+      { x: 0, y: 0, angle: 0, corners: { tl: [0, 0], tr: [0, 0], br: [0, 0], bl: [0, 0] } }
+    ];
+    const cloneFrames = () => JSON.parse(JSON.stringify(frameDefaults));
+    let frameSettings = cloneFrames();
+    let settings = { ...globalDefaults };
+    let selectedFrame = 0;
+    let selectedCorner = 'tl';
+    let autoTimers = [];
+
+    const cards = [...document.querySelectorAll('[data-card]')];
+    const status = document.querySelector('#status');
+    const frames = document.querySelector('#frames');
+    const readout = document.querySelector('#settings-readout');
+    const autoButton = document.querySelector('#auto');
+    const labels = [
+      ['Кадр 1', 'Первое изображение стоит ровно'],
+      ['Кадр 2', 'Первое изображение уходит'],
+      ['Кадр 3', 'Здесь происходит замена'],
+      ['Кадр 4', 'Второе изображение приходит'],
+      ['Кадр 5', 'Второе изображение встаёт ровно']
+    ];
+    const timing = {
+      frame2: .20,
+      frame2End: .36,
+      frame3: .44,
+      frame3End: .52,
+      frame4: .60,
+      frame4End: .76
+    };
+
+    const motionTransform = (frame) => `translate3d(${frame.x}px, ${frame.y}px, 0) rotate(${frame.angle}deg)`;
+
+    const warpTransform = (image, frame) => {
+      const width = image.clientWidth || 1;
+      const height = image.clientHeight || 1;
+      const [tlx, tly] = frame.corners.tl;
+      const [trx, try_] = frame.corners.tr;
+      const [brx, bry] = frame.corners.br;
+      const [blx, bly] = frame.corners.bl;
+      const x0 = tlx, y0 = tly;
+      const x1 = width + trx, y1 = try_;
+      const x2 = width + brx, y2 = height + bry;
+      const x3 = blx, y3 = height + bly;
+      const dx1 = x1 - x2, dy1 = y1 - y2;
+      const dx2 = x3 - x2, dy2 = y3 - y2;
+      const dx3 = x0 - x1 + x2 - x3;
+      const dy3 = y0 - y1 + y2 - y3;
+      const denominator = dx1 * dy2 - dx2 * dy1;
+      if (Math.abs(denominator) < .000001) return 'matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)';
+      const g = (dx3 * dy2 - dx2 * dy3) / denominator;
+      const h = (dx1 * dy3 - dx3 * dy1) / denominator;
+      const a = x1 - x0 + g * x1;
+      const b = x3 - x0 + h * x3;
+      const c = x0;
+      const d = y1 - y0 + g * y1;
+      const e = y3 - y0 + h * y3;
+      const f = y0;
+      return `matrix3d(${a / width},${d / width},0,${g / width},${b / height},${e / height},0,${h / height},0,0,1,0,${c},${f},0,1)`;
+    };
+
+    const cancelAnimations = (card) => {
+      card.querySelectorAll('.motion-layer, img').forEach((element) => {
+        element.getAnimations().forEach((animation) => animation.cancel());
+        element.style.opacity = '';
+      });
+      card.dataset.animating = 'false';
+    };
+
+    const applyFrame = (layer, frame) => {
+      layer.style.transform = motionTransform(frame);
+      layer.querySelector('img').style.transform = warpTransform(layer.querySelector('img'), frame);
+    };
+
+    const renderSelectedFrame = () => {
+      const frame = frameSettings[selectedFrame];
+      const imageIndex = selectedFrame < 2 ? 0 : 1;
+      cards.forEach((card) => {
+        cancelAnimations(card);
+        const layers = card.querySelectorAll('.motion-layer');
+        layers.forEach((layer, index) => { layer.hidden = index !== imageIndex; });
+        applyFrame(layers[imageIndex], frame);
+        card.dataset.current = imageIndex;
+      });
+    };
+
+    const renderFrames = () => {
+      frames.innerHTML = '';
+      frameSettings.forEach((frame, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'frame';
+        button.setAttribute('aria-pressed', String(index === selectedFrame));
+        const useSecond = index >= 2;
+        button.innerHTML = `<span class="frame-visual"><span class="frame-motion"><img src="img/2_ver/PERS_2/list/${useSecond ? 'pers_15_2.png' : 'pers_15_1.png'}" alt=""></span></span><strong>${labels[index][0]}</strong><span>${labels[index][1]}</span>`;
+        button.addEventListener('click', () => selectFrame(index));
+        frames.append(button);
+        const motion = button.querySelector('.frame-motion');
+        motion.style.transform = motionTransform(frame);
+        motion.querySelector('img').style.transform = warpTransform(motion.querySelector('img'), frame);
+      });
+    };
+
+    const updateReadout = () => {
+      const frame = frameSettings[selectedFrame];
+      const [cornerX, cornerY] = frame.corners[selectedCorner];
+      readout.textContent = `${labels[selectedFrame][0]}\nСмещение: X ${frame.x}px, Y ${frame.y}px\nНаклон: ${frame.angle}°\nУгол ${selectedCorner.toUpperCase()}: X ${cornerX}px, Y ${cornerY}px\nДлительность всей анимации: ${settings.duration}мс\nПауза кадров 2 и 4 вдвое длиннее паузы кадра 3\nАвтосмена: раз в ${settings.interval}с; карточки сдвинуты по времени на ${settings.interval / 2}с`;
+    };
+
+    const syncControls = () => {
+      const frame = frameSettings[selectedFrame];
+      const [cornerX, cornerY] = frame.corners[selectedCorner];
+      document.querySelector('#angle').value = frame.angle;
+      document.querySelector('#shift-x').value = frame.x;
+      document.querySelector('#shift-y').value = frame.y;
+      document.querySelector('#corner-x').value = cornerX;
+      document.querySelector('#corner-y').value = cornerY;
+      document.querySelector('#duration').value = settings.duration;
+      document.querySelector('#interval').value = settings.interval;
+      document.querySelector('#angle-value').value = `${frame.angle}°`;
+      document.querySelector('#shift-x-value').value = `${frame.x} px`;
+      document.querySelector('#shift-y-value').value = `${frame.y} px`;
+      document.querySelector('#corner-x-value').value = `${cornerX} px`;
+      document.querySelector('#corner-y-value').value = `${cornerY} px`;
+      document.querySelector('#duration-value').value = `${settings.duration} мс`;
+      document.querySelector('#interval-value').value = `${settings.interval} сек`;
+      document.querySelectorAll('[data-corner]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.corner === selectedCorner)));
+      updateReadout();
+    };
+
+    const selectFrame = (index) => {
+      stopAuto();
+      selectedFrame = index;
+      renderSelectedFrame();
+      renderFrames();
+      syncControls();
+      status.textContent = `${labels[index][0]} выбран для настройки`;
+    };
+
+    const updateSelectedFrame = () => {
+      const frame = frameSettings[selectedFrame];
+      frame.angle = Number(document.querySelector('#angle').value);
+      frame.x = Number(document.querySelector('#shift-x').value);
+      frame.y = Number(document.querySelector('#shift-y').value);
+      frame.corners[selectedCorner] = [
+        Number(document.querySelector('#corner-x').value),
+        Number(document.querySelector('#corner-y').value)
+      ];
+      renderSelectedFrame();
+      renderFrames();
+      syncControls();
+      status.textContent = `${labels[selectedFrame][0]} обновлён`;
+    };
+
+    const playTransition = (card) => {
+      if (card.dataset.animating === 'true') return;
+      cancelAnimations(card);
+      card.dataset.animating = 'true';
+      const currentIndex = Number(card.dataset.current || 0);
+      const nextIndex = currentIndex ? 0 : 1;
+      const sequence = currentIndex === 0 ? frameSettings : [...frameSettings].reverse();
+      const layers = card.querySelectorAll('.motion-layer');
+      const outgoing = layers[currentIndex];
+      const incoming = layers[nextIndex];
+      const outgoingImage = outgoing.querySelector('img');
+      const incomingImage = incoming.querySelector('img');
+      outgoing.hidden = false;
+      incoming.hidden = false;
+
+      const options = { duration: settings.duration, easing: 'linear', fill: 'forwards' };
+      const outgoingAnimation = outgoing.animate([
+        { offset: 0, transform: motionTransform(sequence[0]), opacity: 1 },
+        { offset: timing.frame2, transform: motionTransform(sequence[1]), opacity: 1 },
+        { offset: timing.frame2End, transform: motionTransform(sequence[1]), opacity: 1 },
+        { offset: timing.frame3 - .001, transform: motionTransform(sequence[2]), opacity: 1 },
+        { offset: timing.frame3, transform: motionTransform(sequence[2]), opacity: 0 },
+        { offset: 1, transform: motionTransform(sequence[2]), opacity: 0 }
+      ], options);
+      outgoingImage.animate([
+        { offset: 0, transform: warpTransform(outgoingImage, sequence[0]) },
+        { offset: timing.frame2, transform: warpTransform(outgoingImage, sequence[1]) },
+        { offset: timing.frame2End, transform: warpTransform(outgoingImage, sequence[1]) },
+        { offset: timing.frame3, transform: warpTransform(outgoingImage, sequence[2]) },
+        { offset: 1, transform: warpTransform(outgoingImage, sequence[2]) }
+      ], options);
+      const incomingAnimation = incoming.animate([
+        { offset: 0, transform: motionTransform(sequence[2]), opacity: 0 },
+        { offset: timing.frame3 - .001, transform: motionTransform(sequence[2]), opacity: 0 },
+        { offset: timing.frame3, transform: motionTransform(sequence[2]), opacity: 1 },
+        { offset: timing.frame3End, transform: motionTransform(sequence[2]), opacity: 1 },
+        { offset: timing.frame4, transform: motionTransform(sequence[3]), opacity: 1 },
+        { offset: timing.frame4End, transform: motionTransform(sequence[3]), opacity: 1 },
+        { offset: 1, transform: motionTransform(sequence[4]), opacity: 1 }
+      ], options);
+      incomingImage.animate([
+        { offset: 0, transform: warpTransform(incomingImage, sequence[2]) },
+        { offset: timing.frame3, transform: warpTransform(incomingImage, sequence[2]) },
+        { offset: timing.frame3End, transform: warpTransform(incomingImage, sequence[2]) },
+        { offset: timing.frame4, transform: warpTransform(incomingImage, sequence[3]) },
+        { offset: timing.frame4End, transform: warpTransform(incomingImage, sequence[3]) },
+        { offset: 1, transform: warpTransform(incomingImage, sequence[4]) }
+      ], options);
+
+      incomingAnimation.finished.then(() => {
+        cancelAnimations(card);
+        outgoing.hidden = true;
+        incoming.hidden = false;
+        applyFrame(incoming, sequence[4]);
+        card.dataset.current = nextIndex;
+        status.textContent = `Показан вариант ${nextIndex + 1}`;
+      }).catch(() => { card.dataset.animating = 'false'; });
+      outgoingAnimation.finished.catch(() => {});
+    };
+
+    const stopAuto = () => {
+      autoTimers.forEach((timer) => window.clearTimeout(timer));
+      autoTimers = [];
+      autoButton.setAttribute('aria-pressed', 'false');
+      autoButton.textContent = 'Автосмена выключена';
+    };
+
+    const scheduleCard = (card, firstDelay) => {
+      const run = () => {
+        playTransition(card);
+        const timer = window.setTimeout(run, settings.interval * 1000);
+        autoTimers.push(timer);
+      };
+      const timer = window.setTimeout(run, firstDelay);
+      autoTimers.push(timer);
+    };
+
+    const startAuto = () => {
+      stopAuto();
+      autoButton.setAttribute('aria-pressed', 'true');
+      autoButton.textContent = 'Автосмена включена';
+      scheduleCard(cards[0], settings.interval * 1000);
+      scheduleCard(cards[1], settings.interval * 1500);
+      status.textContent = `Автосмена раз в ${settings.interval} секунд; карточки движутся не одновременно`;
+    };
+
+    cards.forEach((card) => {
+      card.dataset.current = '0';
+      card.addEventListener('click', () => playTransition(card));
+    });
+    ['angle', 'shift-x', 'shift-y', 'corner-x', 'corner-y'].forEach((id) => {
+      document.querySelector(`#${id}`).addEventListener('input', updateSelectedFrame);
+    });
+    document.querySelector('#duration').addEventListener('input', (event) => {
+      settings.duration = Number(event.target.value);
+      syncControls();
+    });
+    document.querySelector('#interval').addEventListener('input', (event) => {
+      const wasAuto = autoButton.getAttribute('aria-pressed') === 'true';
+      settings.interval = Number(event.target.value);
+      syncControls();
+      if (wasAuto) startAuto();
+    });
+    document.querySelectorAll('[data-corner]').forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedCorner = button.dataset.corner;
+        syncControls();
+        status.textContent = `Выбран угол ${selectedCorner.toUpperCase()} в ${labels[selectedFrame][0].toLowerCase()}`;
+      });
+    });
+    document.querySelector('#play-both').addEventListener('click', () => {
+      stopAuto();
+      cards.forEach((card) => {
+        cancelAnimations(card);
+        const layers = card.querySelectorAll('.motion-layer');
+        layers[0].hidden = false;
+        layers[1].hidden = true;
+        applyFrame(layers[0], frameSettings[0]);
+        card.dataset.current = '0';
+      });
+      playTransition(cards[0]);
+      window.setTimeout(() => playTransition(cards[1]), Math.min(450, settings.duration * .35));
+    });
+    autoButton.addEventListener('click', () => {
+      if (autoButton.getAttribute('aria-pressed') === 'true') stopAuto();
+      else startAuto();
+    });
+    document.querySelector('#reset').addEventListener('click', () => {
+      stopAuto();
+      frameSettings = cloneFrames();
+      settings = { ...globalDefaults };
+      selectedFrame = 0;
+      selectedCorner = 'tl';
+      renderSelectedFrame();
+      renderFrames();
+      syncControls();
+      status.textContent = 'Исходные настройки восстановлены';
+    });
+
+    renderSelectedFrame();
+    renderFrames();
+    syncControls();
+  </script>
+</body>
+</html>

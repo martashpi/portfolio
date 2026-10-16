@@ -1,13 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-:root { --ink: #141414; --muted: #676767; --content: 980px; --tile-gap: clamp(10px, 2.5vw, 20px); --segment-gap: clamp(2px, .5vw, 4px); --poster-column-width: clamp(100px, 27vw, 190px); }
+:root { --ink: #141414; --muted: #676767; --content: 900px; --tile-gap: clamp(10px, 2.5vw, 20px); --segment-gap: clamp(2px, .5vw, 4px); --poster-column-width: clamp(100px, 27vw, 190px); }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: #fff; color: var(--ink); font: 400 16px/1.18 Inter, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
-a:hover h2, a:hover .site-name, a:hover.resume-link { text-decoration: underline; text-underline-offset: .14em; }
+a:hover h2,
+a:focus-visible h2,
+a:hover .site-name,
+a.site-name:focus-visible,
+a:hover.resume-link,
+a:focus-visible.resume-link { text-decoration: underline; text-underline-offset: .14em; }
 img { display: block; width: 100%; height: auto; }
-.portfolio-page, .portfolio-page * { border-radius: 0 !important; }
 
 .site-header, .portfolio { width: min(calc(100% - 72px), var(--content)); margin: 0 auto; }
 .site-header { display: flex; align-items: flex-start; justify-content: space-between; padding-top: 27px; }
@@ -23,13 +27,10 @@ h2 { font-size: 16px; line-height: 1.1; font-weight: 800; }
 .project-card__title { display: block; margin-bottom: 23px; }
 .project-card__title p { margin-top: 4px; font-size: 14px; }
 .intro-grid { display: grid; grid-template-columns: 1.2fr minmax(0, 1fr); gap: 24px; }
-.intro-grid .project-card__title { margin-bottom: 23px; }
 .intro-grid > .project-card > a:not(.books-showcase) > img { border-radius: 0; }
 .books-showcase { display: flex; gap: var(--segment-gap); aspect-ratio: 592 / 348; overflow: hidden; border-radius: 0; background: #171717; }
-.book-scene { position: relative; flex: 1 1 0; overflow: hidden; --shift-x: 0px; --shift-y: 0px; }
-.book-scene img { width: 200%; max-width: none; height: 100%; margin-left: -50%; object-fit: cover; object-position: center; transform: translate(var(--shift-x), var(--shift-y)) scale(1.02); transition: transform 420ms cubic-bezier(.2, .7, .2, 1); }
-.books-showcase:hover .book-scene img { transform: translate(var(--shift-x), var(--shift-y)) scale(1.08); }
-@media (prefers-reduced-motion: reduce) { .book-scene img, .visual-scene img { transition: none; } }
+.book-scene { position: relative; flex: 1 1 0; overflow: hidden; }
+.book-scene img { width: 200%; max-width: none; height: 100%; margin-left: -50%; object-fit: cover; object-position: center; transform: scale(1.02); }
 
 .doors-layout { position: relative; display: grid; grid-template-columns: var(--poster-column-width) minmax(0, 1fr); gap: var(--tile-gap); margin-top: 37px; }
 .doors-column { grid-column: 2; }
@@ -52,7 +53,6 @@ h2 { font-size: 16px; line-height: 1.1; font-weight: 800; }
 
 .exhibition-project { margin-top: 37px; }
 .exhibition-project .project-card__title { margin-bottom: 19px; }
-.exhibition-project > img { border-radius: 0; }
 .wide-project { margin-top: 38px; }
 .wide-project .project-card__title { margin-bottom: 19px; }
 .wide-project > img { border-radius: 0; }
@@ -62,13 +62,11 @@ h2 { font-size: 16px; line-height: 1.1; font-weight: 800; }
 .identity-small-cards img { width: 100%; border-radius: 0; }
 .identity-video { display: block; width: 100%; aspect-ratio: 1 / 1; border-radius: 0; background: #c60000; object-fit: cover; object-position: center; }
 .visual-showcase { display: grid; grid-template-columns: 200fr 350fr 314fr; gap: var(--segment-gap); height: 167px; overflow: hidden; border-radius: 0; background: #181818; }
-.visual-scene { position: relative; overflow: hidden; background-repeat: no-repeat; background-size: auto 100%; --shift-x: 0px; --shift-y: 0px; }
-.visual-scene img { width: auto; max-width: none; height: 100%; border-radius: 0; transform: translate(calc(var(--base-x) + var(--shift-x)), var(--shift-y)) scale(1.02); transition: transform 420ms cubic-bezier(.2, .7, .2, 1); }
+.visual-scene { position: relative; overflow: hidden; background-repeat: no-repeat; background-size: auto 100%; }
+.visual-scene img { width: auto; max-width: none; height: 100%; border-radius: 0; transform: translate(var(--base-x), 0) scale(1.02); }
 .visual-scene:nth-child(1) { --base-x: -20.47%; background-image: url('../img/2_ver/Books_list/K_1.png'); background-position: 58% center; }
 .visual-scene:nth-child(2) { --base-x: 0%; background-image: url('../img/2_ver/Books_list/K_2.png'); background-position: left center; }
 .visual-scene:nth-child(3) { --base-x: -13.22%; background-image: url('../img/2_ver/Books_list/K_3.png'); background-position: 47% center; }
-.visual-showcase:hover .visual-scene img { transform: translate(calc(var(--base-x) + var(--shift-x)), var(--shift-y)) scale(1.08); }
-
 .media-project { margin-top: 38px; }
 .media-project .project-card__title { margin-bottom: 17px; }
 .media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
@@ -82,7 +80,6 @@ h2 { font-size: 16px; line-height: 1.1; font-weight: 800; }
 .stickers-project { margin-top: 39px; }
 
 @media (min-width: 700px) {
-  :root { --content: 900px; }
   .site-header, .portfolio { width: min(calc(100% - 96px), var(--content)); }
   .intro-grid { gap: 46px; }
   .doors-layout { gap: 42px; }
@@ -224,7 +221,7 @@ body.moomoo-project-page .moomoo-project-piece--1 { top: 541px; left: 100px; wid
   body.moomoo-project-page .moomoo-project-canvas { width: min(100%, 390px); height: 3310px; }
   .moomoo-project-back { top: 44px; left: 27.75px; }
   .moomoo-project-year { top: 44px; right: 39px; }
-  body.moomoo-project-page h1 { top: 99px; left: 46px; width: 358px; font-size: 32px; }
+  body.moomoo-project-page h1 { top: 99px; left: 46px; width: calc(100% - 46px); font-size: 32px; }
   body.moomoo-project-page .moomoo-project-copy { left: 46px; max-width: calc(100vw - 64px); }
   .moomoo-project-copy--intro { top: 243px; width: 183px; }
   .moomoo-project-copy--cartoon { top: 490px; width: 291px; }
@@ -340,15 +337,17 @@ body.doors-index-page .doors-index-projects {
   display: block;
   font-weight: 400;
   letter-spacing: 0;
-}
-.doors-index-card-title strong {
   font-size: 48px;
   line-height: 1;
 }
 .doors-index-card--doors .doors-index-card-title { transform: translateX(17.5px); }
 .doors-index-card--sign .doors-index-card-title { transform: translateX(7px); }
 .doors-index-card--screens .doors-index-card-title { transform: translateX(-1.5px); }
-.doors-index-card:hover .doors-index-card-title strong { text-decoration: underline; text-underline-offset: .12em; }
+.doors-index-card:hover .doors-index-card-title strong,
+.doors-index-card:focus-visible .doors-index-card-title strong {
+  font-weight: 600;
+  text-decoration: none;
+}
 
 @media (max-width: 699px) {
   body.doors-index-page .doors-index-header,
@@ -360,7 +359,7 @@ body.doors-index-page .doors-index-projects {
   .doors-index-meta span { transform: translateX(4px); }
   body.doors-index-page h1 {
     width: 344px;
-    max-width: none;
+    max-width: calc(100% + 10px);
     margin: 32px 0 0 18px;
     font-size: 32px;
   }
@@ -841,11 +840,12 @@ body.orange-project-page .orange-project-piece {
   overflow: hidden;
   background: #fff;
   cursor: grab;
-  touch-action: none;
+  touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
+.orange-book-viewer.is-touch-mode { touch-action: none; }
 .orange-book-viewer:active { cursor: grabbing; }
 .orange-book-viewer:focus-visible { outline: 2px solid #8d2528; outline-offset: -2px; }
 .orange-book-viewer__fallback,
@@ -858,16 +858,53 @@ body.orange-project-page .orange-project-piece {
 }
 .orange-book-viewer__fallback {
   z-index: 0;
-  object-fit: fill;
+  object-fit: contain;
   transition: opacity 180ms ease-out;
 }
 .orange-book-viewer canvas {
   z-index: 1;
-  /* Match the richer screen colours of the approved cover reference. */
-  filter: saturate(1.45) contrast(1.09) brightness(1.04);
 }
 .orange-book-viewer.is-ready .orange-book-viewer__fallback { opacity: 0; pointer-events: none; }
 .orange-book-viewer.has-error canvas { display: none; }
+.book-touch-mode__message,
+.book-touch-mode__exit,
+.flyer-touch-mode__message,
+.flyer-touch-mode__exit {
+  display: none;
+}
+@media (hover: none), (pointer: coarse) {
+  .orange-book-viewer .book-touch-mode__message,
+  .flyer-3d-viewer .flyer-touch-mode__message {
+    position: absolute;
+    z-index: 2;
+    left: 10px;
+    bottom: 10px;
+    display: block;
+    max-width: calc(100% - 20px);
+    margin: 0;
+    padding: 6px 8px;
+    background: rgb(255 255 255 / 88%);
+    color: #171717;
+    font-size: 11px;
+    line-height: 1.25;
+    pointer-events: none;
+  }
+  .orange-book-viewer.is-touch-mode .book-touch-mode__exit,
+  .flyer-3d-viewer.is-touch-mode .flyer-touch-mode__exit {
+    position: absolute;
+    z-index: 3;
+    top: 10px;
+    right: 10px;
+    display: block;
+    border: 1px solid #171717;
+    border-radius: 0;
+    padding: 7px 10px;
+    background: #fff;
+    color: #171717;
+    font: inherit;
+  }
+}
+
 .orange-project-piece--2 { top: 1394px; left: 100px; width: 405px; height: 274px; }
 .orange-project-piece--3 { top: 1394px; left: 505px; width: 399px; height: 274px; }
 .orange-project-piece--4 { top: 1394px; left: 904px; width: 396px; height: 274px; }
@@ -941,6 +978,253 @@ body.orange-project-page .orange-project-piece {
   .orange-project-piece--17 { top: 5348px; left: 37.5px; width: 300px; height: 313.75px; }
   .orange-project-piece--18 { top: 5680px; left: 30px; width: 299.75px; height: 199.75px; }
   .orange-project-piece--19 { top: 5898px; left: 30px; width: 300px; height: 400.25px; }
+}
+
+/* Персональная выставка. Десктопная сцена повторяет координаты макета 1400 px. */
+body.personal-exhibition-page {
+  margin: 0;
+  overflow-x: hidden;
+  color: #111;
+  background: #fff;
+  font-family: Inter, Arial, sans-serif;
+}
+html:has(body.personal-exhibition-page) { overflow-x: hidden; scrollbar-width: none; }
+body.personal-exhibition-page::-webkit-scrollbar,
+html:has(body.personal-exhibition-page)::-webkit-scrollbar { display: none; }
+body.personal-exhibition-page main.personal-exhibition-canvas {
+  position: relative;
+  width: 1400px;
+  height: 16382px;
+  max-width: none;
+  margin: 0 auto;
+  padding: 0;
+}
+.personal-exhibition-back,
+.personal-exhibition-year,
+.personal-exhibition-copy,
+.personal-exhibition-book-link {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  color: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+.personal-exhibition-back { top: 75px; left: 115px; }
+.personal-exhibition-year { top: 75px; right: 115px; }
+body.personal-exhibition-page h1 {
+  position: absolute;
+  top: 175px;
+  left: 115px;
+  z-index: 3;
+  width: 825px;
+  margin: 0;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.personal-exhibition-copy { max-width: none; text-wrap: balance; }
+.personal-exhibition-copy--intro { top: 254px; left: 115px; width: 567px; }
+.personal-exhibition-copy--about { top: 1251px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--planning { top: 2694px; left: 115px; width: 1157px; }
+.personal-exhibition-copy--planning-2 { top: 3478px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--poster { top: 4025px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--layout { top: 4497px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--avatar { top: 5171px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--merch { top: 6243px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--print { top: 8143px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--colleagues { top: 9595px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--setup { top: 10850px; left: 115px; width: 1069px; }
+.personal-exhibition-copy--show { top: 12520px; left: 115px; width: 1069px; }
+.personal-exhibition-book-link { top: 2613px; left: 1038px; }
+.personal-exhibition-book-link:hover,
+.personal-exhibition-book-link:focus-visible {
+  font-weight: 600;
+  text-decoration: none;
+}
+.personal-exhibition-piece,
+.personal-exhibition-book {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  overflow: hidden;
+}
+.personal-exhibition-piece > img { display: block; width: 100%; height: 100%; object-fit: fill; }
+.personal-exhibition-piece--1 { top: 472px; left: 166px; width: 1067px; height: 711px; }
+.personal-exhibition-piece--title { z-index: 2; top: 224.5px; left: 322.34px; width: 723.13px; height: 245.29px; overflow: visible; }
+.personal-exhibition-piece--title img { object-fit: contain; }
+.personal-exhibition-piece--stuff { top: 216px; left: 821px; width: 579px; height: 567px; }
+.personal-exhibition-piece--2 { top: 1307.93px; left: 166px; width: 320.19px; height: 480.84px; }
+.personal-exhibition-piece--3 { top: 1307.93px; left: 509.76px; width: 720.24px; height: 480.04px; }
+.personal-exhibition-piece--4 { top: 1806.65px; left: 166px; width: 1064px; height: 709.42px; }
+.personal-exhibition-book { z-index: 5; overflow: visible; }
+.personal-exhibition-book--2 { top: 2174px; left: 886px; width: 445px; height: 429px; }
+.personal-exhibition-book--3 { top: 6489px; left: 622px; width: 275.95px; height: 273.28px; }
+.personal-exhibition-book-viewer { background: transparent; }
+.flyer-3d-viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.flyer-3d-viewer.is-touch-mode { touch-action: none; }
+.flyer-3d-viewer:active { cursor: grabbing; }
+.flyer-3d-viewer:focus-visible { outline: 2px solid #8d2528; outline-offset: -2px; }
+.flyer-3d-viewer__fallback,
+.flyer-3d-viewer canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.flyer-3d-viewer__fallback {
+  z-index: 0;
+  object-fit: contain;
+  transition: opacity 180ms ease-out;
+}
+.flyer-3d-viewer canvas { z-index: 1; }
+.flyer-3d-viewer.is-ready .flyer-3d-viewer__fallback { opacity: 0; pointer-events: none; }
+.flyer-3d-viewer.has-error canvas { display: none; }
+.personal-exhibition-piece--5 { top: 2833px; left: 171px; width: 359px; height: 536px; }
+.personal-exhibition-piece--5b { top: 2833px; left: 530px; width: 713px; height: 536px; }
+.personal-exhibition-piece--6 { top: 3623.8px; left: 249px; width: 287.98px; height: 287.98px; }
+.personal-exhibition-piece--7 { top: 3623.8px; left: 554px; width: 288.63px; height: 288.63px; }
+.personal-exhibition-piece--8 { top: 3622px; left: 861.37px; width: 288.63px; height: 288.63px; }
+.personal-exhibition-piece--9 { top: 4126px; left: 556px; width: 288.63px; height: 288.63px; }
+.personal-exhibition-piece--10 { top: 4583.29px; left: 743px; width: 398.78px; height: 510px; }
+.personal-exhibition-piece--11 { top: 4580px; left: 280px; width: 452px; height: 516.57px; }
+.personal-exhibition-piece--13 { top: 5241px; left: 221px; width: 608px; height: 398.4px; }
+.personal-exhibition-piece--14 { top: 5269px; left: 840px; width: 383px; height: 370px; }
+body.personal-exhibition-page .personal-exhibition-switcher {
+  overflow: visible;
+  touch-action: pan-y;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.personal-exhibition-switcher:focus-visible { outline: 2px solid #8d2528; outline-offset: 4px; }
+.personal-exhibition-switcher__track { position: relative; width: 100%; height: 100%; }
+.personal-exhibition-switcher__layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: 50% 55%;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.personal-exhibition-switcher__layer[hidden] { display: none; }
+.personal-exhibition-switcher__layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.personal-exhibition-piece--15 { top: 5697px; left: 590px; width: 631px; height: 408px; }
+.personal-exhibition-piece--16 { top: 5697px; left: 243px; width: 306px; height: 408px; }
+.personal-exhibition-piece--17 { top: 6284px; left: 207px; width: 493.53px; height: 396.53px; }
+.personal-exhibition-piece--18 { top: 6302px; left: 866px; width: 275.16px; height: 370.06px; }
+.personal-exhibition-piece--19 { top: 6739px; left: 220px; width: 294px; height: 295px; }
+.personal-exhibition-piece--20 { top: 6740px; left: 525px; width: 294px; height: 295px; }
+.personal-exhibition-piece--21 { top: 6739px; left: 831px; width: 294px; height: 295px; }
+.personal-exhibition-arrow { position: absolute; z-index: 4; top: 6284px; left: 634.41px; width: 309.83px; height: 219.48px; pointer-events: none; }
+.personal-exhibition-piece--22 { top: 7231px; left: 207px; width: 618px; height: 619px; }
+.personal-exhibition-piece--23 { top: 7143px; left: 935px; width: 206px; height: 882px; }
+.personal-exhibition-piece--23b { top: 8286px; left: 327px; width: 746px; height: 526px; }
+.personal-exhibition-piece--24 { top: 8858px; left: 331px; width: 743px; height: 557px; }
+.personal-exhibition-piece--25 { top: 9675px; left: 192px; width: 1046px; height: 156px; }
+.personal-exhibition-piece--26 { top: 9942px; left: 468px; width: 483px; height: 738px; cursor: ew-resize; touch-action: pan-y; }
+.personal-exhibition-piece--26 img { width: auto; max-width: none; height: 100%; object-fit: cover; will-change: transform; }
+.personal-exhibition-piece--27 { top: 10966px; left: 329px; width: 799px; height: 590.73px; }
+.personal-exhibition-piece--28 { top: 11597px; left: 329px; width: 799px; height: 769.1px; }
+.personal-exhibition-piece--29 { top: 12653px; left: 166px; width: 1083px; height: 722px; }
+.personal-exhibition-piece--30 { top: 13397px; left: 166px; width: 1083px; height: 722px; }
+.personal-exhibition-piece--31 { top: 14148px; left: 166px; width: 426px; height: 605px; }
+.personal-exhibition-piece--32 { top: 14148px; left: 606px; width: 643px; height: 605px; }
+.personal-exhibition-piece--33 { top: 14769px; left: 166px; width: 1083px; height: 722px; }
+.personal-exhibition-piece--34 { top: 15520px; left: 166px; width: 1083px; height: 722px; }
+
+@media (min-width: 900px) and (max-width: 1399px) {
+  body.personal-exhibition-page main.personal-exhibition-canvas {
+    width: 1400px;
+    height: calc(100vw * 11.701429);
+    margin-right: 0;
+    margin-left: calc((100vw - 1400px) / 2);
+    transform: scale(calc(100vw / 1400px));
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 899px) {
+  body.personal-exhibition-page main.personal-exhibition-canvas { width: min(100%, 390px); height: 6320px; }
+  .personal-exhibition-back { top: 44px; left: 28px; }
+  .personal-exhibition-year { top: 44px; right: 39px; }
+  body.personal-exhibition-page h1 { top: 99px; left: 46px; width: calc(100% - 72px); font-size: 32px; }
+  .personal-exhibition-copy, .personal-exhibition-book-link { left: 46px; width: calc(100% - 92px); font-size: 16px; }
+  .personal-exhibition-copy--intro { top: 193px; width: 230px; }
+  .personal-exhibition-piece--1 { top: 277px; left: 50%; width: 290px; height: 193px; transform: translateX(-50%); }
+  .personal-exhibition-piece--title { top: 190px; left: 93px; width: 211px; height: 72px; }
+  .personal-exhibition-piece--stuff { display: none; }
+  .personal-exhibition-copy--about { top: 519px; }
+  .personal-exhibition-piece--2 { top: 600px; left: 46px; width: 87px; height: 131px; }
+  .personal-exhibition-piece--3 { top: 600px; left: 140px; width: 204px; height: 136px; }
+  .personal-exhibition-piece--4 { top: 754px; left: 46px; width: 298px; height: 199px; }
+  .personal-exhibition-book-link { top: 994px; left: 238px; width: auto; }
+  .personal-exhibition-book--2 { top: 908px; left: 229px; width: 128px; height: 124px; }
+  .personal-exhibition-copy--planning { top: 1053px; }
+  .personal-exhibition-piece--5 { top: 1146px; left: 46px; width: 100px; height: 149px; }
+  .personal-exhibition-piece--5b { top: 1146px; left: 146px; width: 199px; height: 149px; }
+  .personal-exhibition-copy--planning-2 { top: 1345px; }
+  .personal-exhibition-piece--6 { top: 1455px; left: 64px; width: 88px; height: 88px; }
+  .personal-exhibition-piece--7 { top: 1455px; left: 157px; width: 88px; height: 88px; }
+  .personal-exhibition-piece--8 { top: 1455px; left: 250px; width: 88px; height: 88px; }
+  .personal-exhibition-piece--9 { top: 1564px; left: 151px; width: 88px; height: 88px; }
+  .personal-exhibition-copy--poster { top: 1702px; }
+  .personal-exhibition-piece--11 { top: 1767px; left: 63px; width: 139px; height: 159px; }
+  .personal-exhibition-piece--10 { top: 1768px; left: 206px; width: 123px; height: 157px; }
+  .personal-exhibition-copy--layout { top: 1972px; }
+  .personal-exhibition-piece--13 { top: 2042px; left: 46px; width: 253px; height: 166px; }
+  .personal-exhibition-piece--14 { top: 2037px; left: 302px; width: 43px; height: 42px; }
+  .personal-exhibition-copy--avatar { top: 2262px; }
+  .personal-exhibition-piece--16 { top: 2350px; left: 50px; width: 91px; height: 121px; }
+  .personal-exhibition-piece--15 { top: 2350px; left: 146px; width: 199px; height: 129px; }
+  .personal-exhibition-piece--17 { top: 2510px; left: 46px; width: 164px; height: 132px; }
+  .personal-exhibition-piece--18 { top: 2517px; left: 278px; width: 67px; height: 90px; }
+  .personal-exhibition-arrow { top: 2506px; left: 162px; width: 104px; height: 74px; }
+  .personal-exhibition-copy--merch { top: 2701px; }
+  .personal-exhibition-piece--19 { top: 2784px; left: 58px; width: 91px; height: 91px; }
+  .personal-exhibition-piece--20 { top: 2784px; left: 150px; width: 91px; height: 91px; }
+  .personal-exhibition-piece--21 { top: 2784px; left: 243px; width: 91px; height: 91px; }
+  .personal-exhibition-book--3 { top: 2855px; left: 166px; width: 86px; height: 85px; }
+  .personal-exhibition-piece--22 { top: 2950px; left: 47px; width: 190px; height: 190px; }
+  .personal-exhibition-piece--23 { top: 2951px; left: 259px; width: 64px; height: 274px; }
+  .personal-exhibition-piece--23b { top: 3190px; left: 46px; width: 298px; height: 210px; }
+  .personal-exhibition-piece--24 { top: 3440px; left: 46px; width: 298px; height: 223px; }
+  .personal-exhibition-piece--25 { top: 3735px; left: 46px; width: 298px; height: 44px; }
+  .personal-exhibition-piece--26 { top: 3825px; left: 111px; width: 168px; height: 256px; }
+  .personal-exhibition-copy--print { top: 4140px; }
+  .personal-exhibition-piece--27 { top: 4315px; left: 46px; width: 298px; height: 220px; }
+  .personal-exhibition-piece--28 { top: 4565px; left: 46px; width: 298px; height: 287px; }
+  .personal-exhibition-copy--colleagues { top: 4915px; }
+  .personal-exhibition-piece--29 { top: 4995px; left: 46px; width: 298px; height: 199px; }
+  .personal-exhibition-copy--setup { top: 5260px; }
+  .personal-exhibition-piece--30 { top: 5330px; left: 46px; width: 298px; height: 199px; }
+  .personal-exhibition-piece--31 { top: 5540px; left: 46px; width: 117px; height: 166px; }
+  .personal-exhibition-piece--32 { top: 5540px; left: 171px; width: 173px; height: 163px; }
+  .personal-exhibition-copy--show { top: 5770px; }
+  .personal-exhibition-piece--33 { top: 5840px; left: 46px; width: 298px; height: 199px; }
+  .personal-exhibition-piece--34 { top: 6060px; left: 46px; width: 298px; height: 199px; }
 }
 
 /* Временный режим инспектора: включается добавлением ?styles=1 к адресу страницы. */

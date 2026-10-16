@@ -3,7 +3,9 @@ import * as THREE from './vendor/three.module.min.js';
 // Reuse decoded source images when several 3D_COMP instances are on one page.
 THREE.Cache.enabled = true;
 
-const container = document.querySelector('.book-prototype');
+const container = document.querySelector('.book-prototype[data-auto-init-book]');
+const DEFAULT_ARTWORK_EMISSIVE_INTENSITY = 0.055;
+const DEFAULT_COLOUR_SATURATION = 0.9;
 
 if (container) {
   initBookModel(container).catch((error) => {
@@ -14,19 +16,23 @@ if (container) {
 export async function initBookModel(viewer, options = {}) {
   const {
     toneMappingExposure = 1.08,
+    artworkEmissiveIntensity = DEFAULT_ARTWORK_EMISSIVE_INTENSITY,
+    colourSaturation = DEFAULT_COLOUR_SATURATION,
     initialRotation = [-0.18, 0.55, -0.045],
     desktopCameraZ = 40.2,
     mobileCameraZ = 43.5
   } = options;
+  const transparent = viewer.dataset.transparent === 'true';
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
-    alpha: false,
+    alpha: transparent,
     powerPreference: 'high-performance'
   });
-  renderer.setClearColor(0xffffff, 1);
+  renderer.setClearColor(0xffffff, transparent ? 0 : 1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = toneMappingExposure;
+  renderer.domElement.style.filter = `saturate(${colourSaturation})`;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -46,9 +52,9 @@ export async function initBookModel(viewer, options = {}) {
   const textureLoader = new THREE.TextureLoader();
   const textureBase = new URL('../img/2_ver/ORANGE_2/book-textures/', import.meta.url);
   const [frontTexture, backTexture, spineTexture] = await Promise.all([
-    loadArtwork(textureLoader, new URL('front.png', textureBase), maxAnisotropy),
-    loadArtwork(textureLoader, new URL('back.png', textureBase), maxAnisotropy),
-    loadArtwork(textureLoader, new URL('spine.png', textureBase), maxAnisotropy)
+    loadArtwork(textureLoader, new URL('front_v2.png', textureBase), maxAnisotropy),
+    loadArtwork(textureLoader, new URL('back_v2.png', textureBase), maxAnisotropy),
+    loadArtwork(textureLoader, new URL('spine_v2.png', textureBase), maxAnisotropy)
   ]);
 
   const clothBump = createClothBump(maxAnisotropy);
@@ -115,10 +121,14 @@ export async function initBookModel(viewer, options = {}) {
     clearcoat: 0.012,
     clearcoatRoughness: 0.97,
     bumpMap: spineBump,
-    bumpScale: 0.007
+    bumpScale: 0.007,
+    // Keep the printed spine as bright as the front and back cover artwork.
+    emissive: 0xffffff,
+    emissiveMap: spineTexture,
+    emissiveIntensity: artworkEmissiveIntensity
   });
-  const frontMaterial = createArtworkMaterial(frontTexture, clothBump);
-  const backMaterial = createArtworkMaterial(backTexture, clothBump);
+  const frontMaterial = createArtworkMaterial(frontTexture, clothBump, artworkEmissiveIntensity);
+  const backMaterial = createArtworkMaterial(backTexture, clothBump, artworkEmissiveIntensity);
   const unifiedCover = new THREE.Mesh(
     createUnifiedCoverGeometry({
       width: 21,
@@ -161,23 +171,55 @@ export async function initBookModel(viewer, options = {}) {
   rimLight.position.set(-13, 4, -15);
   scene.add(rimLight);
 
-  const shadowPlane = new THREE.Mesh(
-    new THREE.PlaneGeometry(35, 19),
-    new THREE.ShadowMaterial({ color: 0x342b25, opacity: 0.14, transparent: true })
-  );
-  shadowPlane.rotation.x = -Math.PI / 2;
-  shadowPlane.position.set(0, -12.1, -1.8);
-  shadowPlane.receiveShadow = true;
-  scene.add(shadowPlane);
+  let shadowMaterial = null;
+  if (!transparent) {
+    shadowMaterial = new THREE.ShadowMaterial({ color: 0x342b25, opacity: 0.14, transparent: true });
+    const shadowPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(35, 19),
+      shadowMaterial
+    );
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.set(0, -12.1, -1.8);
+    shadowPlane.receiveShadow = true;
+    scene.add(shadowPlane);
+  }
 
   installInteraction(viewer, renderer, scene, camera, book, {
     desktopCameraZ,
     mobileCameraZ
   });
-  return { renderer, scene, camera, book };
+  const artworkMaterials = [frontMaterial, backMaterial, spineMaterial];
+  const setAppearance = ({
+    toneMappingExposure: nextExposure,
+    artworkEmissiveIntensity: nextPrintBrightness,
+    colourSaturation: nextSaturation,
+    keyLightIntensity: nextKeyLight,
+    fillLightIntensity: nextFillLight,
+    rimLightIntensity: nextRimLight,
+    artworkRoughness: nextRoughness,
+    artworkBumpScale: nextBumpScale,
+    shadowOpacity: nextShadowOpacity
+  } = {}) => {
+    if (Number.isFinite(nextExposure)) renderer.toneMappingExposure = nextExposure;
+    if (Number.isFinite(nextPrintBrightness)) {
+      artworkMaterials.forEach((material) => { material.emissiveIntensity = nextPrintBrightness; });
+    }
+    if (Number.isFinite(nextSaturation)) renderer.domElement.style.filter = `saturate(${nextSaturation})`;
+    if (Number.isFinite(nextKeyLight)) keyLight.intensity = nextKeyLight;
+    if (Number.isFinite(nextFillLight)) fillLight.intensity = nextFillLight;
+    if (Number.isFinite(nextRimLight)) rimLight.intensity = nextRimLight;
+    if (Number.isFinite(nextRoughness)) artworkMaterials.forEach((material) => { material.roughness = nextRoughness; });
+    if (Number.isFinite(nextBumpScale)) artworkMaterials.forEach((material) => { material.bumpScale = nextBumpScale; });
+    if (shadowMaterial && Number.isFinite(nextShadowOpacity)) shadowMaterial.opacity = nextShadowOpacity;
+    renderer.render(scene, camera);
+  };
+  // Page-level components can pass a complete appearance preset; omitted values
+  // keep the physical defaults above.
+  setAppearance(options);
+  return { renderer, scene, camera, book, artworkMaterials, setAppearance };
 }
 
-function createArtworkMaterial(map, bumpMap) {
+function createArtworkMaterial(map, bumpMap, emissiveIntensity) {
   return new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
     map,
@@ -191,7 +233,7 @@ function createArtworkMaterial(map, bumpMap) {
     bumpScale: 0.0065,
     emissive: 0xffffff,
     emissiveMap: map,
-    emissiveIntensity: 0.055
+    emissiveIntensity
   });
 }
 
@@ -677,6 +719,65 @@ function installInteraction(viewer, renderer, scene, camera, book, cameraOptions
   const localX = new THREE.Vector3(1, 0, 0);
   const yaw = new THREE.Quaternion();
   const pitch = new THREE.Quaternion();
+  const originalAriaLabel = viewer.getAttribute('aria-label') || 'Интерактивная 3D-модель книги.';
+  const touchModeMessage = viewer.querySelector('.book-touch-mode__message') || document.createElement('p');
+  const touchModeExit = viewer.querySelector('.book-touch-mode__exit') || document.createElement('button');
+  const simulateTouchMode = viewer.dataset.touchModePreview === 'true';
+  let pendingActivation = null;
+
+  touchModeMessage.className = 'book-touch-mode__message';
+  touchModeMessage.setAttribute('aria-live', 'polite');
+  if (!touchModeMessage.isConnected) viewer.append(touchModeMessage);
+
+  touchModeExit.className = 'book-touch-mode__exit';
+  touchModeExit.type = 'button';
+  touchModeExit.textContent = 'Готово';
+  if (!touchModeExit.isConnected) viewer.append(touchModeExit);
+
+  function setTouchMode(active) {
+    viewer.classList.toggle('is-touch-mode', active);
+    viewer.setAttribute('aria-label', active
+      ? 'Интерактивная 3D-модель книги. Полное вращение включено. Нажмите «Готово», чтобы снова прокручивать страницу.'
+      : `${originalAriaLabel} На сенсорном экране нажмите на книгу, чтобы включить полное вращение.`);
+    touchModeMessage.textContent = active
+      ? 'Полное вращение включено · двигайте книгу пальцем'
+      : 'Прокрутка включена · нажмите на книгу, чтобы вращать';
+  }
+
+  function isActivationPointer(event) {
+    return event.pointerType === 'touch' || (simulateTouchMode && event.pointerType === 'mouse');
+  }
+
+  function prepareTouchMode(event) {
+    if (!isActivationPointer(event) || viewer.classList.contains('is-touch-mode')) return;
+    pendingActivation = {
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      moved: false
+    };
+    event.stopImmediatePropagation();
+  }
+
+  function trackTouchMode(event) {
+    if (!pendingActivation || event.pointerId !== pendingActivation.id) return;
+    if (Math.hypot(event.clientX - pendingActivation.x, event.clientY - pendingActivation.y) > 8) {
+      pendingActivation.moved = true;
+    }
+    event.stopImmediatePropagation();
+  }
+
+  function activateTouchMode(event) {
+    if (!pendingActivation || event.pointerId !== pendingActivation.id) return;
+    event.stopImmediatePropagation();
+    if (!pendingActivation.moved) setTouchMode(true);
+    pendingActivation = null;
+  }
+
+  function cancelTouchModeActivation(event) {
+    if (!pendingActivation || event.pointerId !== pendingActivation.id) return;
+    pendingActivation = null;
+  }
 
   function rotateBook(deltaX, deltaY) {
     yaw.setFromAxisAngle(worldY, deltaX);
@@ -752,6 +853,10 @@ function installInteraction(viewer, renderer, scene, camera, book, cameraOptions
   }
 
   function handleKeyboard(event) {
+    if (event.key === 'Escape' && viewer.classList.contains('is-touch-mode')) {
+      setTouchMode(false);
+      return;
+    }
     const step = event.shiftKey ? 0.16 : 0.085;
     let horizontal = 0;
     let vertical = 0;
@@ -768,11 +873,24 @@ function installInteraction(viewer, renderer, scene, camera, book, cameraOptions
     requestDraw();
   }
 
+  setTouchMode(false);
+  viewer.addEventListener('pointerdown', prepareTouchMode, true);
+  viewer.addEventListener('pointermove', trackTouchMode, true);
+  viewer.addEventListener('pointerup', activateTouchMode, true);
+  viewer.addEventListener('pointercancel', cancelTouchModeActivation, true);
   viewer.addEventListener('pointerdown', beginDrag);
   viewer.addEventListener('pointermove', moveDrag);
   viewer.addEventListener('pointerup', endDrag);
   viewer.addEventListener('pointercancel', endDrag);
   viewer.addEventListener('keydown', handleKeyboard);
+  touchModeExit.addEventListener('pointerdown', (event) => event.stopPropagation());
+  touchModeExit.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setTouchMode(false);
+  });
+  document.addEventListener('pointerdown', (event) => {
+    if (viewer.classList.contains('is-touch-mode') && !viewer.contains(event.target)) setTouchMode(false);
+  }, true);
   new ResizeObserver(resize).observe(viewer);
   resize();
   renderer.render(scene, camera);

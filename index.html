@@ -75,8 +75,8 @@
           </div>
         </article>
         <article class="exhibition-project">
-          <a class="project-card__title" href="#exhibition"><h2>ПЕРСОНАЛЬНАЯ ВЫСТАВКА</h2></a>
-          <img src="img/2_ver/exhib.png" alt="Персональная выставка">
+          <a class="project-card__title" href="projects/personal-exhibition/index.html"><h2>ПЕРСОНАЛЬНАЯ ВЫСТАВКА</h2></a>
+          <a href="projects/personal-exhibition/index.html" aria-label="Открыть проект «Персональная выставка»"><img src="img/2_ver/exhib.png" alt="Персональная выставка"></a>
         </article>
       </div>
     </section>
@@ -115,47 +115,25 @@
     </section>
   </main>
   <script>
-    document.querySelectorAll('.books-showcase, .visual-showcase').forEach((showcase) => {
-      const sceneSelector = '.book-scene, .visual-scene';
-      const scenes = showcase.querySelectorAll(sceneSelector);
-      let activeScene = null;
-      const reset = () => scenes.forEach((scene) => {
-        scene.style.setProperty('--shift-x', '0px');
-        scene.style.setProperty('--shift-y', '0px');
-      });
+    const lazyVideos = document.querySelectorAll('video[data-video-src]');
+    const loadVideo = (video) => {
+      video.src = video.dataset.videoSrc;
+      video.play().catch(() => {});
+    };
 
-      showcase.addEventListener('pointermove', (event) => {
-        const scene = event.target.closest(sceneSelector);
-        if (!scene) return;
-        const bounds = showcase.getBoundingClientRect();
-        const x = (event.clientX - bounds.left) / bounds.width - .5;
-        const y = (event.clientY - bounds.top) / bounds.height - .5;
-        if (activeScene && activeScene !== scene) {
-          activeScene.style.setProperty('--shift-x', '0px');
-          activeScene.style.setProperty('--shift-y', '0px');
-        }
-        activeScene = scene;
-        scene.style.setProperty('--shift-x', `${x * 50.715}px`);
-        scene.style.setProperty('--shift-y', scene.classList.contains('book-scene') ? '0px' : `${y * 50.715}px`);
-      });
+    if ('IntersectionObserver' in window) {
+      const videoObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(({ isIntersecting, target }) => {
+          if (!isIntersecting) return;
+          loadVideo(target);
+          observer.unobserve(target);
+        });
+      }, { rootMargin: '240px 0px' });
 
-      showcase.addEventListener('pointerleave', () => {
-        activeScene = null;
-        reset();
-      });
-      reset();
-    });
-
-    const videoObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(({ isIntersecting, target }) => {
-        if (!isIntersecting) return;
-        target.src = target.dataset.videoSrc;
-        target.play().catch(() => {});
-        observer.unobserve(target);
-      });
-    }, { rootMargin: '240px 0px' });
-
-    document.querySelectorAll('video[data-video-src]').forEach((video) => videoObserver.observe(video));
+      lazyVideos.forEach((video) => videoObserver.observe(video));
+    } else {
+      lazyVideos.forEach(loadVideo);
+    }
 
     const postersCard = document.querySelector('.posters-card');
     const doorsColumn = document.querySelector('.doors-column');
