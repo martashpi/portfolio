@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Персональная выставка — Марта Шпигельман</title>
-  <link rel="stylesheet" href="../../css/styles.css?v=20261015-1">
+  <link rel="stylesheet" href="../../css/styles.css?v=20261016-2">
 </head>
 <body class="personal-exhibition-page">
   <main class="personal-exhibition-canvas">
@@ -25,7 +25,7 @@
     <a class="personal-exhibition-book-link" href="../zavodnoi-apelsin/index.html">О книге здесь</a>
     <div class="personal-exhibition-book personal-exhibition-book--2" aria-label="Интерактивная 3D-модель книги">
       <div class="orange-book-viewer personal-exhibition-book-viewer" data-component="3D_COMP" data-transparent="true" tabindex="0" aria-label="Интерактивная 3D-модель книги. Перетащите, чтобы повернуть.">
-        <img class="orange-book-viewer__fallback" src="../../img/2_ver/PERS_2/for3d/book3d2.png" alt="Книга «Заводной апельсин»">
+        <img class="orange-book-viewer__fallback" src="../../img/2_ver/ORANGE_2/book-default-fallback.png" alt="Книга «Заводной апельсин»">
       </div>
     </div>
     <p class="personal-exhibition-copy personal-exhibition-copy--planning">Я сама готовила все планшеты под помещение. Я разметила, где что должно располагаться, и сделала скетчи для листовки, навигации и ростовой фигуры</p>
@@ -37,7 +37,9 @@
     <figure class="personal-exhibition-piece personal-exhibition-piece--7"><img src="../../img/2_ver/PERS_2/Pers_7.png" alt="Иллюстрация"></figure>
     <figure class="personal-exhibition-piece personal-exhibition-piece--8"><img src="../../img/2_ver/PERS_2/Pers_8.png" alt="Иллюстрация"></figure>
     <div class="personal-exhibition-piece personal-exhibition-piece--9" aria-label="Интерактивная 3D-композиция из двух листовок">
-      <div class="flyer-3d-viewer personal-exhibition-flyer-viewer" data-component="LISTS_COMP" data-flyer-config='{"background":16777215,"initialRotation":[-0.06,0.08,0],"flyers":[{"front":"../../img/2_ver/PERS_2/for3d/listovka-textures/comp2_1_v2.png","back":"solid:white","position":[-0.52,-0.35,-0.06],"rotation":[0,0,-0.25],"scale":0.82},{"front":"../../img/2_ver/PERS_2/for3d/listovka-textures/comp2_2_v2.png","back":"solid:white","position":[0.38,0.35,0.1],"rotation":[0,0,0.38],"scale":0.82}]}' tabindex="0" aria-label="Интерактивная 3D-композиция из двух листовок. Перетащите, чтобы повернуть."></div>
+      <div class="flyer-3d-viewer personal-exhibition-flyer-viewer" data-component="LISTS_COMP" data-flyer-config='{"background":16777215,"initialRotation":[-0.06,0.08,0],"flyers":[{"front":"../../img/2_ver/PERS_2/for3d/listovka-textures/comp2_1_v2.png","back":"solid:white","position":[-0.52,-0.35,-0.06],"rotation":[0,0,-0.25],"scale":0.82},{"front":"../../img/2_ver/PERS_2/for3d/listovka-textures/comp2_2_v2.png","back":"solid:white","position":[0.38,0.35,0.1],"rotation":[0,0,0.38],"scale":0.82}]}' tabindex="0" aria-label="Интерактивная 3D-композиция из двух листовок. Перетащите, чтобы повернуть.">
+        <img class="flyer-3d-viewer__fallback" src="../../img/2_ver/PERS_2/for3d/flyer-pair-fallback.png" alt="">
+      </div>
     </div>
 
     <p class="personal-exhibition-copy personal-exhibition-copy--poster">Получилось две версии листовки, и она же стала постером</p>
@@ -48,11 +50,11 @@
     <figure class="personal-exhibition-piece personal-exhibition-piece--14"><img src="../../img/2_ver/PERS_2/Pers_14.png" alt="Листовка"></figure>
 
     <p class="personal-exhibition-copy personal-exhibition-copy--avatar">Все иллюстрации с этим персонажем я делала с референса своей аватарки. Я заказывала ещё и ростовую фигуру</p>
-    <figure class="personal-exhibition-piece personal-exhibition-piece--15 personal-exhibition-switcher" data-switcher aria-label="Листайте, чтобы сменить вариант листовки">
-      <div class="personal-exhibition-switcher__track"><img src="../../img/2_ver/PERS_2/list/pers_15_1.png" alt="Первый вариант листовки"><img src="../../img/2_ver/PERS_2/list/pers_15_2.png" alt="Второй вариант листовки"></div>
+    <figure class="personal-exhibition-piece personal-exhibition-piece--15 personal-exhibition-switcher" data-switcher role="button" tabindex="0" aria-label="Нажмите, чтобы сменить вариант листовки">
+      <div class="personal-exhibition-switcher__track"><span class="personal-exhibition-switcher__layer"><img src="../../img/2_ver/PERS_2/list/pers_15_1.png" alt="Первый вариант листовки"></span><span class="personal-exhibition-switcher__layer" hidden><img src="../../img/2_ver/PERS_2/list/pers_15_2.png" alt="Второй вариант листовки"></span></div>
     </figure>
-    <figure class="personal-exhibition-piece personal-exhibition-piece--16 personal-exhibition-switcher" data-switcher aria-label="Листайте, чтобы сменить вариант иллюстрации">
-      <div class="personal-exhibition-switcher__track"><img src="../../img/2_ver/PERS_2/list/pers_16_1.png" alt="Первый вариант иллюстрации"><img src="../../img/2_ver/PERS_2/list/pers_16_2.png" alt="Второй вариант иллюстрации"></div>
+    <figure class="personal-exhibition-piece personal-exhibition-piece--16 personal-exhibition-switcher" data-switcher role="button" tabindex="0" aria-label="Нажмите, чтобы сменить вариант иллюстрации">
+      <div class="personal-exhibition-switcher__track"><span class="personal-exhibition-switcher__layer"><img src="../../img/2_ver/PERS_2/list/pers_16_1.png" alt="Первый вариант иллюстрации"></span><span class="personal-exhibition-switcher__layer" hidden><img src="../../img/2_ver/PERS_2/list/pers_16_2.png" alt="Второй вариант иллюстрации"></span></div>
     </figure>
     <figure class="personal-exhibition-piece personal-exhibition-piece--17"><img src="../../img/2_ver/PERS_2/Pers_17.png" alt="Ростовая фигура"></figure>
     <figure class="personal-exhibition-piece personal-exhibition-piece--18"><img src="../../img/2_ver/PERS_2/Pers_18.png" alt="Ростовая фигура"></figure>
@@ -61,12 +63,14 @@
     <figure class="personal-exhibition-piece personal-exhibition-piece--21"><img src="../../img/2_ver/PERS_2/Pers_21.png" alt="Открытка"></figure>
     <div class="personal-exhibition-book personal-exhibition-book--3" aria-label="Интерактивная 3D-модель книги">
       <div class="orange-book-viewer personal-exhibition-book-viewer" data-component="3D_COMP" data-transparent="true" tabindex="0" aria-label="Интерактивная 3D-модель книги. Перетащите, чтобы повернуть.">
-        <img class="orange-book-viewer__fallback" src="../../img/2_ver/PERS_2/for3d/book3d3.png" alt="Книга «Заводной апельсин»">
+        <img class="orange-book-viewer__fallback" src="../../img/2_ver/ORANGE_2/book-default-fallback.png" alt="Книга «Заводной апельсин»">
       </div>
     </div>
     <img class="personal-exhibition-arrow" src="../../img/2_ver/PERS_2/toppers/strela2.png" alt="">
     <div class="personal-exhibition-piece personal-exhibition-piece--22" aria-label="Интерактивная 3D-модель листовки">
-      <div class="flyer-3d-viewer personal-exhibition-flyer-viewer" data-component="YOLKA_COMP" data-flyer-config='{"background":16777215,"flyers":[{"front":"../../img/2_ver/PERS_2/for3d/listovka-textures/comp1_front_v2.png","back":"../../img/2_ver/PERS_2/for3d/listovka-textures/comp1_back_v2.png"}]}' tabindex="0" aria-label="Интерактивная 3D-модель листовки. Перетащите, чтобы повернуть."></div>
+      <div class="flyer-3d-viewer personal-exhibition-flyer-viewer" data-component="YOLKA_COMP" data-flyer-config='{"background":16777215,"flyers":[{"front":"../../img/2_ver/PERS_2/for3d/listovka-textures/comp1_front_v2.png","back":"../../img/2_ver/PERS_2/for3d/listovka-textures/comp1_back_v2.png"}]}' tabindex="0" aria-label="Интерактивная 3D-модель листовки. Перетащите, чтобы повернуть.">
+        <img class="flyer-3d-viewer__fallback" src="../../img/2_ver/PERS_2/for3d/flyer-single-fallback.png" alt="">
+      </div>
     </div>
     <figure class="personal-exhibition-piece personal-exhibition-piece--23"><img src="../../img/2_ver/PERS_2/pers_23.png" alt="Серия стикеров"></figure>
     <figure class="personal-exhibition-piece personal-exhibition-piece--23b"><img src="../../img/2_ver/PERS_2/pers_23-1.png" alt="Стикеры"></figure>
@@ -91,6 +95,6 @@
   </main>
   <script type="module" src="../../js/orange-book-3d.js?v=20261015-20"></script>
   <script type="module" src="../../js/flyer-3d.js?v=20261015-2"></script>
-  <script src="../../js/personal-exhibition.js?v=20261015-1" defer></script>
+  <script src="../../js/personal-exhibition.js?v=20261016-1" defer></script>
 </body>
 </html>

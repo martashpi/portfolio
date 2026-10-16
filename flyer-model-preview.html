@@ -18,8 +18,12 @@
     .flyer-3d-viewer:active { cursor: grabbing; }
     .flyer-3d-viewer:focus-visible { outline: 2px solid #151515; outline-offset: 3px; }
     .flyer-3d-viewer::before { position: absolute; inset: 0; display: grid; place-items: center; color: #777; content: 'Загрузка 3D-листовки…'; }
-    .flyer-3d-viewer canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+    .flyer-3d-viewer__fallback, .flyer-3d-viewer canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+    .flyer-3d-viewer__fallback { z-index: 0; object-fit: contain; transition: opacity 180ms ease-out; }
+    .flyer-3d-viewer canvas { z-index: 1; }
     .flyer-3d-viewer.is-ready::before { display: none; }
+    .flyer-3d-viewer.is-ready .flyer-3d-viewer__fallback { opacity: 0; pointer-events: none; }
+    .flyer-3d-viewer.has-error canvas { display: none; }
     .preview-note { margin: 22px 0 0; color: #555; font-size: 14px; }
     .layout-editor { width: min(100%, 560px); margin: 22px 0 0 auto; padding: 16px; background: rgba(255, 255, 255, .46); }
     .layout-editor h2 { margin: 0 0 12px; font-size: 16px; font-weight: 400; }
@@ -50,11 +54,11 @@
     <section class="preview-grid" aria-label="Демонстрация 3D-компонента листовки">
       <figure class="preview-card">
         <figcaption>Одна листовка</figcaption>
-        <div class="flyer-3d-viewer" id="flyer-single" tabindex="0" role="application" aria-label="Одна интерактивная 3D-листовка"></div>
+        <div class="flyer-3d-viewer" id="flyer-single" tabindex="0" role="application" aria-label="Одна интерактивная 3D-листовка"><img class="flyer-3d-viewer__fallback" src="./img/2_ver/PERS_2/for3d/flyer-single-fallback.png" alt=""></div>
       </figure>
       <figure class="preview-card">
         <figcaption>Композиция из двух листовок</figcaption>
-        <div class="flyer-3d-viewer" id="flyer-pair" tabindex="0" role="application" aria-label="Композиция из двух интерактивных 3D-листовок"></div>
+        <div class="flyer-3d-viewer" id="flyer-pair" tabindex="0" role="application" aria-label="Композиция из двух интерактивных 3D-листовок"><img class="flyer-3d-viewer__fallback" src="./img/2_ver/PERS_2/for3d/flyer-pair-fallback.png" alt=""></div>
       </figure>
     </section>
     <p class="preview-note">Чтобы поставить свои изображения, передайте в <code>front</code> и <code>back</code> пути к PNG/JPG. Положение, угол и масштаб каждой листовки задаются в объекте <code>flyers</code>.</p>
