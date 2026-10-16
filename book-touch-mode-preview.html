@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Тест режима взаимодействия с 3D-книгой</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { color: #171717; font-family: Arial, Helvetica, sans-serif; }
+    body { margin: 0; background: #f4f3f0; }
+    main { width: min(920px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 72px; }
+    header { min-height: 52vh; display: grid; align-content: center; gap: 16px; }
+    h1 { max-width: 780px; margin: 0; font-size: clamp(34px, 6vw, 68px); font-weight: 400; line-height: .96; }
+    header p,
+    .after p { max-width: 620px; margin: 0; color: #666; font-size: 16px; line-height: 1.45; }
+    .demo { margin: 0; }
+    .book-touch-viewer {
+      position: relative;
+      width: 100%;
+      height: min(72vh, 680px);
+      min-height: 480px;
+      overflow: hidden;
+      background: #fff;
+      cursor: grab;
+      touch-action: pan-y;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .book-touch-viewer.is-touch-mode { touch-action: none; }
+    .book-touch-viewer:active { cursor: grabbing; }
+    .book-touch-viewer:focus-visible { outline: 2px solid #8d2528; outline-offset: 3px; }
+    .book-touch-viewer canvas { display: block; width: 100%; height: 100%; }
+    .book-touch-mode__message {
+      position: absolute;
+      z-index: 2;
+      left: 16px;
+      bottom: 16px;
+      max-width: calc(100% - 32px);
+      padding: 10px 12px;
+      background: rgb(255 255 255 / 88%);
+      color: #171717;
+      font-size: 14px;
+      line-height: 1.25;
+      pointer-events: none;
+    }
+    .book-touch-mode__exit {
+      position: absolute;
+      z-index: 3;
+      top: 14px;
+      right: 14px;
+      display: none;
+      border: 1px solid #171717;
+      border-radius: 0;
+      padding: 10px 14px;
+      background: #fff;
+      color: #171717;
+      font: inherit;
+      cursor: pointer;
+    }
+    .book-touch-viewer.is-touch-mode .book-touch-mode__exit { display: block; }
+    figcaption { margin-top: 10px; color: #666; font-size: 13px; }
+    .after { min-height: 85vh; display: grid; align-content: center; gap: 12px; }
+    .after strong { font-size: clamp(26px, 4vw, 44px); font-weight: 400; }
+    @media (max-width: 700px) {
+      main { width: min(100% - 20px, 520px); padding-top: 20px; }
+      header { min-height: 58vh; }
+      .book-touch-viewer { height: 68vh; min-height: 430px; }
+      .book-touch-mode__message { left: 10px; bottom: 10px; max-width: calc(100% - 20px); }
+      .book-touch-mode__exit { top: 10px; right: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Тест режима взаимодействия</h1>
+      <p>Сначала проведите пальцем вверх по книге: страница должна прокрутиться. Затем коротко нажмите на книгу и попробуйте вращать её во всех направлениях.</p>
+    </header>
+
+    <figure class="demo">
+      <section
+        class="book-touch-viewer"
+        data-touch-mode-preview="true"
+        tabindex="0"
+        role="application"
+        aria-label="Интерактивная 3D-модель книги. Нажмите, чтобы включить полное вращение."
+      >
+        <p class="book-touch-mode__message" aria-live="polite"></p>
+        <button class="book-touch-mode__exit" type="button">Готово</button>
+      </section>
+      <figcaption>Тестовая страница общего режима, который теперь используют все копии книги.</figcaption>
+    </figure>
+
+    <section class="after">
+      <strong>Нижняя часть страницы</strong>
+      <p>Если вы дошли сюда свайпом, прокрутка поверх книги работает. В режиме вращения нажмите «Готово» или коснитесь области вне книги, чтобы снова прокручивать страницу.</p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initBookModel } from './js/orange-book-prototype.js?v=20261016-1';
+
+    const viewer = document.querySelector('.book-touch-viewer');
+    const settings = {
+      toneMappingExposure: 1.26,
+      artworkEmissiveIntensity: 0.06,
+      colourSaturation: 1.1,
+      keyLightIntensity: 1.1,
+      fillLightIntensity: 0.25,
+      rimLightIntensity: 0.9,
+      artworkRoughness: 0.65,
+      artworkBumpScale: 0.02,
+      shadowOpacity: 0,
+      initialRotation: [-0.18, 0.55, -0.045],
+      desktopCameraZ: 40.2,
+      mobileCameraZ: 43.5
+    };
+
+    await initBookModel(viewer, settings);
+  </script>
+</body>
+</html>

@@ -719,6 +719,65 @@ function installInteraction(viewer, renderer, scene, camera, book, cameraOptions
   const localX = new THREE.Vector3(1, 0, 0);
   const yaw = new THREE.Quaternion();
   const pitch = new THREE.Quaternion();
+  const originalAriaLabel = viewer.getAttribute('aria-label') || 'Интерактивная 3D-модель книги.';
+  const touchModeMessage = viewer.querySelector('.book-touch-mode__message') || document.createElement('p');
+  const touchModeExit = viewer.querySelector('.book-touch-mode__exit') || document.createElement('button');
+  const simulateTouchMode = viewer.dataset.touchModePreview === 'true';
+  let pendingActivation = null;
+
+  touchModeMessage.className = 'book-touch-mode__message';
+  touchModeMessage.setAttribute('aria-live', 'polite');
+  if (!touchModeMessage.isConnected) viewer.append(touchModeMessage);
+
+  touchModeExit.className = 'book-touch-mode__exit';
+  touchModeExit.type = 'button';
+  touchModeExit.textContent = 'Готово';
+  if (!touchModeExit.isConnected) viewer.append(touchModeExit);
+
+  function setTouchMode(active) {
+    viewer.classList.toggle('is-touch-mode', active);
+    viewer.setAttribute('aria-label', active
+      ? 'Интерактивная 3D-модель книги. Полное вращение включено. Нажмите «Готово», чтобы снова прокручивать страницу.'
+      : `${originalAriaLabel} На сенсорном экране нажмите на книгу, чтобы включить полное вращение.`);
+    touchModeMessage.textContent = active
+      ? 'Полное вращение включено · двигайте книгу пальцем'
+      : 'Прокрутка включена · нажмите на книгу, чтобы вращать';
+  }
+
+  function isActivationPointer(event) {
+    return event.pointerType === 'touch' || (simulateTouchMode && event.pointerType === 'mouse');
+  }
+
+  function prepareTouchMode(event) {
+    if (!isActivationPointer(event) || viewer.classList.contains('is-touch-mode')) return;
+    pendingActivation = {
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      moved: false
+    };
+    event.stopImmediatePropagation();
+  }
+
+  function trackTouchMode(event) {
+    if (!pendingActivation || event.pointerId !== pendingActivation.id) return;
+    if (Math.hypot(event.clientX - pendingActivation.x, event.clientY - pendingActivation.y) > 8) {
+      pendingActivation.moved = true;
+    }
+    event.stopImmediatePropagation();
+  }
+
+  function activateTouchMode(event) {
+    if (!pendingActivation || event.pointerId !== pendingActivation.id) return;
+    event.stopImmediatePropagation();
+    if (!pendingActivation.moved) setTouchMode(true);
+    pendingActivation = null;
+  }
+
+  function cancelTouchModeActivation(event) {
+    if (!pendingActivation || event.pointerId !== pendingActivation.id) return;
+    pendingActivation = null;
+  }
 
   function rotateBook(deltaX, deltaY) {
     yaw.setFromAxisAngle(worldY, deltaX);
@@ -794,6 +853,10 @@ function installInteraction(viewer, renderer, scene, camera, book, cameraOptions
   }
 
   function handleKeyboard(event) {
+    if (event.key === 'Escape' && viewer.classList.contains('is-touch-mode')) {
+      setTouchMode(false);
+      return;
+    }
     const step = event.shiftKey ? 0.16 : 0.085;
     let horizontal = 0;
     let vertical = 0;
@@ -810,11 +873,24 @@ function installInteraction(viewer, renderer, scene, camera, book, cameraOptions
     requestDraw();
   }
 
+  setTouchMode(false);
+  viewer.addEventListener('pointerdown', prepareTouchMode, true);
+  viewer.addEventListener('pointermove', trackTouchMode, true);
+  viewer.addEventListener('pointerup', activateTouchMode, true);
+  viewer.addEventListener('pointercancel', cancelTouchModeActivation, true);
   viewer.addEventListener('pointerdown', beginDrag);
   viewer.addEventListener('pointermove', moveDrag);
   viewer.addEventListener('pointerup', endDrag);
   viewer.addEventListener('pointercancel', endDrag);
   viewer.addEventListener('keydown', handleKeyboard);
+  touchModeExit.addEventListener('pointerdown', (event) => event.stopPropagation());
+  touchModeExit.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setTouchMode(false);
+  });
+  document.addEventListener('pointerdown', (event) => {
+    if (viewer.classList.contains('is-touch-mode') && !viewer.contains(event.target)) setTouchMode(false);
+  }, true);
   new ResizeObserver(resize).observe(viewer);
   resize();
   renderer.render(scene, camera);

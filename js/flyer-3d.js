@@ -333,6 +333,7 @@ function addShadow(scene) {
 function installInteraction(viewer, renderer, scene, camera, object, settings) {
   let frameId = 0;
   let dragging = false;
+  let dragPointerId = null;
   let lastX = 0;
   let lastY = 0;
   let velocityX = 0;
@@ -343,6 +344,76 @@ function installInteraction(viewer, renderer, scene, camera, object, settings) {
   const localX = new THREE.Vector3(1, 0, 0);
   const yaw = new THREE.Quaternion();
   const pitch = new THREE.Quaternion();
+  const originalAriaLabel = viewer.getAttribute('aria-label') || 'Интерактивная 3D-модель листовки.';
+  const touchMessage = document.createElement('p');
+  touchMessage.className = 'flyer-touch-mode__message';
+  touchMessage.setAttribute('aria-live', 'polite');
+  const exitButton = document.createElement('button');
+  exitButton.className = 'flyer-touch-mode__exit';
+  exitButton.type = 'button';
+  exitButton.textContent = 'Готово';
+  viewer.append(touchMessage, exitButton);
+  let pendingTouch = null;
+
+  const setTouchMode = (active) => {
+    viewer.classList.toggle('is-touch-mode', active);
+    viewer.setAttribute('aria-label', active
+      ? 'Интерактивная 3D-модель листовки. Полное вращение включено. Нажмите «Готово», чтобы снова прокручивать страницу.'
+      : `${originalAriaLabel} На сенсорном экране нажмите на листовку, чтобы включить полное вращение.`);
+    touchMessage.textContent = active
+      ? 'Полное вращение включено · двигайте листовку пальцем'
+      : 'Прокрутка включена · нажмите на листовку, чтобы вращать';
+    if (!active) {
+      pendingTouch = null;
+      dragging = false;
+      velocityX = 0;
+      velocityY = 0;
+      if (dragPointerId !== null && viewer.hasPointerCapture(dragPointerId)) {
+        viewer.releasePointerCapture(dragPointerId);
+      }
+      dragPointerId = null;
+    }
+  };
+
+  // Leave the first gesture to native scrolling; only a short tap activates 3D.
+  viewer.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'touch' || viewer.classList.contains('is-touch-mode')) return;
+    if (!pendingTouch) {
+      pendingTouch = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+    } else {
+      pendingTouch.moved = true;
+    }
+    event.stopImmediatePropagation();
+  }, true);
+  viewer.addEventListener('pointermove', (event) => {
+    if (!pendingTouch || event.pointerId !== pendingTouch.id) return;
+    if (Math.hypot(event.clientX - pendingTouch.x, event.clientY - pendingTouch.y) > 8) {
+      pendingTouch.moved = true;
+    }
+    event.stopImmediatePropagation();
+  }, true);
+  viewer.addEventListener('pointerup', (event) => {
+    if (!pendingTouch || event.pointerId !== pendingTouch.id) return;
+    const activate = !pendingTouch.moved;
+    pendingTouch = null;
+    event.stopImmediatePropagation();
+    if (activate) setTouchMode(true);
+  }, true);
+  viewer.addEventListener('pointercancel', (event) => {
+    if (pendingTouch && event.pointerId === pendingTouch.id) pendingTouch = null;
+  }, true);
+  exitButton.addEventListener('pointerdown', (event) => event.stopPropagation());
+  exitButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setTouchMode(false);
+  });
+  document.addEventListener('pointerdown', (event) => {
+    if (viewer.classList.contains('is-touch-mode') && !viewer.contains(event.target)) setTouchMode(false);
+  }, true);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && viewer.classList.contains('is-touch-mode')) setTouchMode(false);
+  });
+  setTouchMode(false);
 
   const rotate = (deltaX, deltaY) => {
     yaw.setFromAxisAngle(worldY, deltaX);
@@ -380,7 +451,9 @@ function installInteraction(viewer, renderer, scene, camera, object, settings) {
     requestDraw();
   };
   const beginDrag = (event) => {
+    if (dragging || (event.pointerType === 'mouse' && event.button !== 0)) return;
     dragging = true;
+    dragPointerId = event.pointerId;
     lastX = event.clientX;
     lastY = event.clientY;
     velocityX = 0;
@@ -390,7 +463,7 @@ function installInteraction(viewer, renderer, scene, camera, object, settings) {
     requestDraw();
   };
   const moveDrag = (event) => {
-    if (!dragging) return;
+    if (!dragging || event.pointerId !== dragPointerId) return;
     const bounds = viewer.getBoundingClientRect();
     const sensitivity = 2.6 / Math.max(Math.min(bounds.width, bounds.height), 180);
     const dx = event.clientX - lastX;
@@ -403,8 +476,9 @@ function installInteraction(viewer, renderer, scene, camera, object, settings) {
     requestDraw();
   };
   const endDrag = (event) => {
-    if (!dragging) return;
+    if (!dragging || event.pointerId !== dragPointerId) return;
     dragging = false;
+    dragPointerId = null;
     if (viewer.hasPointerCapture(event.pointerId)) viewer.releasePointerCapture(event.pointerId);
     requestDraw();
   };

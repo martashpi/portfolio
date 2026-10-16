@@ -8,6 +8,7 @@ const switcherFrames = [
 const switcherTiming = { frame2: .20, frame2End: .36, frame3: .44, frame3End: .52, frame4: .60, frame4End: .76 };
 const switcherDuration = 700;
 const switcherInterval = 10000;
+const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const switcherMotionTransform = (frame) => `translate3d(${frame.x}px, ${frame.y}px, 0) rotate(${frame.angle}deg)`;
 
@@ -53,7 +54,25 @@ const applySwitcherFrame = (layer, frame) => {
   image.style.transform = switcherWarpTransform(image, frame);
 };
 
+const settleSwitcher = (switcher, visibleIndex = Number(switcher.dataset.current || 0)) => {
+  cancelSwitcherAnimations(switcher);
+  switcher.querySelectorAll('.personal-exhibition-switcher__layer').forEach((layer, index) => {
+    layer.hidden = index !== visibleIndex;
+    if (index === visibleIndex) applySwitcherFrame(layer, switcherFrames[0]);
+  });
+  switcher.dataset.current = String(visibleIndex);
+};
+
+const switchSwitcherImmediately = (switcher) => {
+  const currentIndex = Number(switcher.dataset.current || 0);
+  settleSwitcher(switcher, currentIndex ? 0 : 1);
+};
+
 const playSwitcherTransition = (switcher) => {
+  if (reducedMotionQuery.matches) {
+    switchSwitcherImmediately(switcher);
+    return;
+  }
   if (switcher.dataset.animating === 'true') return;
   cancelSwitcherAnimations(switcher);
   switcher.dataset.animating = 'true';
@@ -112,18 +131,32 @@ const playSwitcherTransition = (switcher) => {
   outgoingAnimation.finished.catch(() => {});
 };
 
-document.querySelectorAll('[data-switcher]').forEach((switcher, index) => {
+const switchers = [...document.querySelectorAll('[data-switcher]')];
+
+switchers.forEach((switcher, index) => {
   const layers = switcher.querySelectorAll('.personal-exhibition-switcher__layer');
   let timer;
+  const pauseReasons = new Set();
   switcher.dataset.current = '0';
   applySwitcherFrame(layers[0], switcherFrames[0]);
 
   const schedule = (delay = switcherInterval) => {
     window.clearTimeout(timer);
+    timer = undefined;
+    if (pauseReasons.size) return;
     timer = window.setTimeout(() => {
       playSwitcherTransition(switcher);
       schedule();
     }, delay);
+  };
+  const pause = (reason) => {
+    pauseReasons.add(reason);
+    window.clearTimeout(timer);
+    timer = undefined;
+  };
+  const resume = (reason, delay = switcherInterval) => {
+    pauseReasons.delete(reason);
+    if (!pauseReasons.size) schedule(delay);
   };
   const activate = () => {
     playSwitcherTransition(switcher);
@@ -135,7 +168,33 @@ document.querySelectorAll('[data-switcher]').forEach((switcher, index) => {
     event.preventDefault();
     activate();
   });
-  schedule(index === 0 ? switcherInterval : switcherInterval * 1.5);
+  switcher.addEventListener('pointerenter', (event) => {
+    if (event.pointerType !== 'touch') pause('hover');
+  });
+  switcher.addEventListener('pointerleave', (event) => {
+    if (event.pointerType !== 'touch') resume('hover');
+  });
+  switcher.addEventListener('focus', () => {
+    if (switcher.matches(':focus-visible')) pause('focus');
+  });
+  switcher.addEventListener('blur', () => resume('focus'));
+  const initialDelay = index === 0 ? switcherInterval : switcherInterval * 1.5;
+  schedule(initialDelay);
+
+  if ('IntersectionObserver' in window) {
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      if (entry.intersectionRatio < .25) {
+        pause('viewport');
+      } else if (pauseReasons.has('viewport')) {
+        resume('viewport', initialDelay);
+      }
+    }, { threshold: [0, .25] });
+    visibilityObserver.observe(switcher);
+  }
+});
+
+reducedMotionQuery.addEventListener('change', () => {
+  switchers.forEach((switcher) => settleSwitcher(switcher));
 });
 
 document.querySelectorAll('[data-pan]').forEach((container) => {

@@ -49,10 +49,11 @@
       overflow: hidden;
       background: #fff;
       cursor: grab;
-      touch-action: none;
+      touch-action: pan-y;
       user-select: none;
       -webkit-user-select: none;
     }
+    .book-prototype.is-touch-mode { touch-action: none; }
     .book-prototype:active { cursor: grabbing; }
     .book-prototype:focus-visible { outline: 2px solid #8d2528; outline-offset: 3px; }
     .book-prototype canvas {
@@ -60,7 +61,7 @@
       width: 100%;
       height: 100%;
     }
-    .hint {
+    .book-touch-mode__message {
       position: absolute;
       right: 18px;
       bottom: 16px;
@@ -71,7 +72,20 @@
       pointer-events: none;
       transition: opacity 180ms ease;
     }
-    .book-prototype.has-interacted .hint { opacity: 0; }
+    .book-touch-mode__exit {
+      position: absolute;
+      z-index: 3;
+      top: 16px;
+      right: 16px;
+      display: none;
+      border: 1px solid #171717;
+      border-radius: 0;
+      padding: 9px 12px;
+      background: #fff;
+      color: #171717;
+      font: inherit;
+    }
+    .book-prototype.is-touch-mode .book-touch-mode__exit { display: block; }
     .book-editor {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -92,7 +106,7 @@
       .preview-meta { display: block; }
       .preview-note { margin-top: 12px; text-align: left; }
       .book-prototype { height: 68vh; min-height: 440px; }
-      .hint { right: 12px; bottom: 12px; }
+      .book-touch-mode__message { right: 12px; bottom: 12px; }
       .book-editor { grid-template-columns: 1fr; }
     }
   </style>
@@ -109,7 +123,8 @@
       role="application"
       aria-label="Тестовая интерактивная 3D-модель книги. Перетащите книгу мышью или пальцем, чтобы повернуть её."
     >
-      <p class="hint">Потяните, чтобы повернуть книгу</p>
+      <p class="book-touch-mode__message" aria-live="polite"></p>
+      <button class="book-touch-mode__exit" type="button">Готово</button>
     </section>
     <section class="book-editor" aria-label="Временный редактор цвета книги">
       <label>
@@ -155,7 +170,7 @@
     </section>
   </main>
   <script type="module">
-    import { initBookModel } from './js/orange-book-prototype.js?v=20261015-21';
+    import { initBookModel } from './js/orange-book-prototype.js?v=20261016-1';
 
     const settings = {
       toneMappingExposure: 1.26,

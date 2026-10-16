@@ -840,11 +840,12 @@ body.orange-project-page .orange-project-piece {
   overflow: hidden;
   background: #fff;
   cursor: grab;
-  touch-action: none;
+  touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
+.orange-book-viewer.is-touch-mode { touch-action: none; }
 .orange-book-viewer:active { cursor: grabbing; }
 .orange-book-viewer:focus-visible { outline: 2px solid #8d2528; outline-offset: -2px; }
 .orange-book-viewer__fallback,
@@ -865,6 +866,44 @@ body.orange-project-page .orange-project-piece {
 }
 .orange-book-viewer.is-ready .orange-book-viewer__fallback { opacity: 0; pointer-events: none; }
 .orange-book-viewer.has-error canvas { display: none; }
+.book-touch-mode__message,
+.book-touch-mode__exit,
+.flyer-touch-mode__message,
+.flyer-touch-mode__exit {
+  display: none;
+}
+@media (hover: none), (pointer: coarse) {
+  .orange-book-viewer .book-touch-mode__message,
+  .flyer-3d-viewer .flyer-touch-mode__message {
+    position: absolute;
+    z-index: 2;
+    left: 10px;
+    bottom: 10px;
+    display: block;
+    max-width: calc(100% - 20px);
+    margin: 0;
+    padding: 6px 8px;
+    background: rgb(255 255 255 / 88%);
+    color: #171717;
+    font-size: 11px;
+    line-height: 1.25;
+    pointer-events: none;
+  }
+  .orange-book-viewer.is-touch-mode .book-touch-mode__exit,
+  .flyer-3d-viewer.is-touch-mode .flyer-touch-mode__exit {
+    position: absolute;
+    z-index: 3;
+    top: 10px;
+    right: 10px;
+    display: block;
+    border: 1px solid #171717;
+    border-radius: 0;
+    padding: 7px 10px;
+    background: #fff;
+    color: #171717;
+    font: inherit;
+  }
+}
 
 .orange-project-piece--2 { top: 1394px; left: 100px; width: 405px; height: 274px; }
 .orange-project-piece--3 { top: 1394px; left: 505px; width: 399px; height: 274px; }
@@ -1031,11 +1070,12 @@ body.personal-exhibition-page h1 {
   height: 100%;
   overflow: hidden;
   cursor: grab;
-  touch-action: none;
+  touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
+.flyer-3d-viewer.is-touch-mode { touch-action: none; }
 .flyer-3d-viewer:active { cursor: grabbing; }
 .flyer-3d-viewer:focus-visible { outline: 2px solid #8d2528; outline-offset: -2px; }
 .flyer-3d-viewer__fallback,

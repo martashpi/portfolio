@@ -1,4 +1,4 @@
-import { initBookModel } from './orange-book-prototype.js?v=20261015-20';
+import { initBookModel } from './orange-book-prototype.js?v=20261016-1';
 
 const COMPONENT_NAME = '3D_COMP';
 const COMPONENT_SELECTOR = `[data-component="${COMPONENT_NAME}"]`;

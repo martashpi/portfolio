@@ -14,7 +14,8 @@
     .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .preview-card { margin: 0; min-width: 0; }
     .preview-card figcaption { margin-bottom: 10px; font-size: 14px; }
-    .flyer-3d-viewer { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #dedede; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .flyer-3d-viewer { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #dedede; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+    .flyer-3d-viewer.is-touch-mode { touch-action: none; }
     .flyer-3d-viewer:active { cursor: grabbing; }
     .flyer-3d-viewer:focus-visible { outline: 2px solid #151515; outline-offset: 3px; }
     .flyer-3d-viewer::before { position: absolute; inset: 0; display: grid; place-items: center; color: #777; content: 'Загрузка 3D-листовки…'; }
@@ -24,6 +25,11 @@
     .flyer-3d-viewer.is-ready::before { display: none; }
     .flyer-3d-viewer.is-ready .flyer-3d-viewer__fallback { opacity: 0; pointer-events: none; }
     .flyer-3d-viewer.has-error canvas { display: none; }
+    .flyer-touch-mode__message, .flyer-touch-mode__exit { display: none; }
+    @media (hover: none), (pointer: coarse) {
+      .flyer-touch-mode__message { position: absolute; z-index: 2; left: 10px; bottom: 10px; display: block; max-width: calc(100% - 20px); margin: 0; padding: 6px 8px; background: rgb(255 255 255 / 88%); color: #171717; font-size: 11px; line-height: 1.25; pointer-events: none; }
+      .is-touch-mode .flyer-touch-mode__exit { position: absolute; z-index: 3; top: 10px; right: 10px; display: block; border: 1px solid #171717; border-radius: 0; padding: 7px 10px; background: #fff; color: #171717; font: inherit; }
+    }
     .preview-note { margin: 22px 0 0; color: #555; font-size: 14px; }
     .layout-editor { width: min(100%, 560px); margin: 22px 0 0 auto; padding: 16px; background: rgba(255, 255, 255, .46); }
     .layout-editor h2 { margin: 0 0 12px; font-size: 16px; font-weight: 400; }
@@ -49,7 +55,7 @@
   <main>
     <header>
       <h1>Превью 3D-листовок</h1>
-      <p>Перетаскивайте мышью или пальцем. Колёсико не меняет масштаб.</p>
+      <p>Мышью перетаскивайте сразу. На телефоне нажмите на листовку, чтобы включить вращение; «Готово» вернёт прокрутку.</p>
     </header>
     <section class="preview-grid" aria-label="Демонстрация 3D-компонента листовки">
       <figure class="preview-card">
@@ -79,7 +85,7 @@
     </section>
   </main>
   <script type="module">
-    import { mountFlyerModel } from './js/flyer-3d.js?v=20261015-1';
+    import { mountFlyerModel } from './js/flyer-3d.js?v=20261016-1';
 
     mountFlyerModel(document.querySelector('#flyer-single'), {
       flyers: [{
